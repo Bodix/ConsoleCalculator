@@ -7,15 +7,23 @@ namespace ConsoleCalculator
     {
         public static void Calculate()
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nВведите команду:");
-            Console.Write(">");
-            string command = Console.ReadLine().ToString();
+            Console.Write("> ");
+            string command = GetInput().ToString();
             if (command == "/vector")
             {
-                Console.WriteLine("Введите действие (v+v, v-v, v*n, vLen, v*v):");
+                Console.WriteLine(
+@"Доступные действия:
+v+v - сложение векторов
+v-v - вычитание векторов
+v*n - умножение вектора на число
+vLen - длинна вектора
+v*v - скалярное произведение векторов");
+                Console.Write("Действие: ");
                 int vectorSize;
                 double[] v1, v2;
-                switch (Console.ReadLine())
+                switch (GetInput())
                 {
                     case "v+v":
                         vectorSize = GetVectorSize();
@@ -32,7 +40,7 @@ namespace ConsoleCalculator
                     case "v*n":
                         v1 = GetVector();
                         Console.Write("Число: ");
-                        double n = Convert.ToDouble(Console.ReadLine());
+                        double n = Convert.ToDouble(GetInput());
                         ShowVector(Vector.MultiplyVectorToNumber(v1, n));
                         break;
                     case "vLen":
@@ -51,11 +59,21 @@ namespace ConsoleCalculator
             }
             if (command == "/matrix")
             {
-                Console.WriteLine("Введите действие (m+m, m-m, m*n, m*v, m*m, mTrans, mDet, mInv):");
+                Console.WriteLine(
+@"Доступные действия:
+m+m - сложение матриц
+m-m - вычитание матриц
+m*n - умножение матрицы на число
+m*v - умножение матрицы на вектор
+m*m - умножение матрицы на матрицу
+mTrans - транспонирование матрицы
+mDet - определитель матрицы
+mInv - обратная матрица");
+                Console.Write("Действие: ");
                 double[,] m1, m2;
                 try
                 {
-                    switch (Console.ReadLine())
+                    switch (GetInput())
                     {
                         case "m+m":
                             m1 = GetMatrix(1);
@@ -70,7 +88,7 @@ namespace ConsoleCalculator
                         case "m*n":
                             m1 = GetMatrix();
                             Console.Write("Число: ");
-                            double n = Convert.ToDouble(Console.ReadLine());
+                            double n = Convert.ToDouble(GetInput());
                             ShowMatrix(Matrix.MultiplyMatrixToNumber(m1, n));
                             break;
                         case "m*v":
@@ -101,16 +119,21 @@ namespace ConsoleCalculator
                 catch (ArgumentException e)
                 {
                     ShowException(e.Message);
+                    Calculate();
                 }
             }
             if (command == "/system")
             {
-                Console.WriteLine("Введите действие (byInv, byIter):");
+                Console.WriteLine(
+@"Доступные действия:
+byInv - решить СЛАУ методом обратной матрицы
+byIter - решить СЛАУ методом простых итераций");
+                Console.Write("Действие: ");
                 double[,] a;
                 double[] b;
                 try
                 {
-                    switch (Console.ReadLine())
+                    switch (GetInput())
                     {
                         case "byInv":
                             a = GetMatrix();
@@ -127,6 +150,7 @@ namespace ConsoleCalculator
                 catch (ArgumentException e)
                 {
                     ShowException(e.Message);
+                    Calculate();
                 }
             }
             if (command == "/help")
@@ -137,6 +161,8 @@ namespace ConsoleCalculator
             if (command == "/clear")
             {
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("\"Console Calculator\" by Bogdan Nikolaev (IT-36a, NTU \"KhPI\")");
                 Calculate();
             }
             else
@@ -145,12 +171,18 @@ namespace ConsoleCalculator
                 Calculate();
             }
         }
+        private static string GetInput()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            string input = Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            return input;
+        }
         private static void ShowException(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Calculate();
+            Console.ForegroundColor = ConsoleColor.Yellow;
         }
 
         #region Vector input/output.
@@ -163,12 +195,12 @@ namespace ConsoleCalculator
                 try
                 {
                     Console.Write("Размер: ");
-                    size = Int16.Parse(Console.ReadLine());
+                    size = Int16.Parse(GetInput());
                     flag = false;
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Некорректное значение, попробуйте снова.");
+                    ShowException("Некорректное значение, попробуйте снова.");
                 }
             }
             return size;
@@ -185,12 +217,12 @@ namespace ConsoleCalculator
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        vector[i] = Convert.ToDouble(Console.ReadLine());
+                        vector[i] = Convert.ToDouble(GetInput());
                         flag = false;
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Некорректное значение, попробуйте снова.");
+                        ShowException("Некорректное значение, попробуйте снова.");
                     }
                 }
             }
@@ -208,12 +240,12 @@ namespace ConsoleCalculator
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        vector[i] = Convert.ToDouble(Console.ReadLine());
+                        vector[i] = Convert.ToDouble(GetInput());
                         flag = false;
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Некорректное значение, попробуйте снова.");
+                        ShowException("Некорректное значение, попробуйте снова.");
                     }
                 }
             }
@@ -239,12 +271,12 @@ namespace ConsoleCalculator
                 try
                 {
                     Console.Write("Кол-во строк: ");
-                    rows = Int16.Parse(Console.ReadLine());
+                    rows = Int16.Parse(GetInput());
                     flag = false;
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Некорректное значение, попробуйте снова.");
+                    ShowException("Некорректное значение, попробуйте снова.");
                 }
             }
             return rows;
@@ -258,12 +290,12 @@ namespace ConsoleCalculator
                 try
                 {
                     Console.Write("Кол-во столбцов: ");
-                    cols = Int16.Parse(Console.ReadLine());
+                    cols = Int16.Parse(GetInput());
                     flag = false;
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Некорректное значение, попробуйте снова.");
+                    ShowException("Некорректное значение, попробуйте снова.");
                 }
             }
             return cols;
@@ -280,7 +312,7 @@ namespace ConsoleCalculator
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        string s = Console.ReadLine();
+                        string s = GetInput();
                         int j = 0;
                         foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
                         {
@@ -290,7 +322,7 @@ namespace ConsoleCalculator
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Некорректное значение, попробуйте снова.");
+                        ShowException("Некорректное значение, попробуйте снова.");
                     }
                 }
 
@@ -309,7 +341,7 @@ namespace ConsoleCalculator
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        string s = Console.ReadLine();
+                        string s = GetInput();
                         int j = 0;
                         foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
                         {
@@ -319,7 +351,7 @@ namespace ConsoleCalculator
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Некорректное значение, попробуйте снова.");
+                        ShowException("Некорректное значение, попробуйте снова.");
                     }
                 }
 
