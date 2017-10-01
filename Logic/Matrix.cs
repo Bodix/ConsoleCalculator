@@ -4,52 +4,24 @@ namespace ConsoleCalculator
 {
     class Matrix
     {
-        // Vector.
-        public static double[] AddVectorToVector(double[] vector1, double[] vector2)
-        {
-            double[] result = new double[vector1.Length];
-            for (int i = 0; i < result.Length; i++)
-                result[i] = vector1[i] + vector2[i];
-            return result;
-        }
-        public static double[] DeductVectorFromVector(double[] vector1, double[] vector2)
-        {
-            double[] result = new double[vector1.Length];
-            for (int i = 0; i < result.Length; i++)
-                result[i] = vector1[i] - vector2[i];
-            return result;
-        }
-        public static double[] MultiplyVectorToNumber(double[] vector1, double vector2)
-        {
-            double[] result = new double[vector1.Length];
-            for (int i = 0; i < result.Length; i++)
-                result[i] = vector1[i] * vector2;
-            return result;
-        }
-        public static double GetVectorLength(double[] vector)
-        {
-            double sum = 0;
-            for (int i = 0; i < vector.GetLength(0); i++)
-                sum += vector[i] * vector[i];
-            return Math.Sqrt(sum);
-        }
-        public static double MultiplyScalar(double[] vector1, double[] vector2)
-        {
-            double sum = 0;
-            for (int i = 0; i < vector1.GetLength(0); i++)
-                sum += vector1[i] * vector2[i];
-            return sum;
-        }
-
-        // Matrix.
         public static double[,] AddMatrixToMatrix(double[,] matrix1, double[,] matrix2)
         {
             if (matrix1.GetLength(0) != matrix2.GetLength(0) || matrix1.GetLength(1) != matrix2.GetLength(1))
-                throw new ArgumentException("Ошибка: Размерность матриц не совпадает.");
+                throw new ArgumentException("Ошибка: Размерности матриц не совпадает.");
             double[,] result = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
             for (int row = 0; row < result.GetLength(0); row++)
                 for (int col = 0; col < result.GetLength(1); col++)
                     result[row, col] = matrix1[row, col] + matrix2[row, col];
+            return result;
+        }
+        public static double[,] DeductMatrixFromMatrix(double[,] matrix1, double[,] matrix2)
+        {
+            if (matrix1.GetLength(0) != matrix2.GetLength(0) || matrix1.GetLength(1) != matrix2.GetLength(1))
+                throw new ArgumentException("Ошибка: Размерности матриц не совпадает.");
+            double[,] result = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
+            for (int row = 0; row < result.GetLength(0); row++)
+                for (int col = 0; col < result.GetLength(1); col++)
+                    result[row, col] = matrix1[row, col] - matrix2[row, col];
             return result;
         }
         public static double[,] MultiplyMatrixToNumber(double[,] matrix, double number)
@@ -60,6 +32,17 @@ namespace ConsoleCalculator
                     result[row, col] = matrix[row, col] * number;
             return result;
         }
+        public static double[] MultiplyMatrixToVector(double[,] matrix, double[] vector)
+        {
+            if (matrix.GetLength(1) != vector.GetLength(0))
+                throw new ArgumentException("Ошибка: Количество столбцов матрицы не равно размеру вектора.");
+            double[] result = new double[matrix.GetLength(0)];
+            for (int i = 0; i < result.GetLength(0); i++)
+            {
+                result[i] = Vector.MultiplyScalar(GetRow(matrix, i), vector);
+            }
+            return result;
+        }
         public static double[,] MultiplyMatrixToMatrix(double[,] matrix1, double[,] matrix2)
         {
             if (matrix1.GetLength(1) != matrix2.GetLength(0))
@@ -67,7 +50,7 @@ namespace ConsoleCalculator
             double[,] result = new double[matrix1.GetLength(0), matrix2.GetLength(1)];
             for (int row = 0; row < result.GetLength(0); row++)
                 for (int col = 0; col < result.GetLength(1); col++)
-                    result[row, col] = MultiplyScalar(GetRow(matrix1, row), GetColumn(matrix2, col));
+                    result[row, col] = Vector.MultiplyScalar(GetRow(matrix1, row), GetColumn(matrix2, col));
             return result;
         }
         private static double[] GetRow(double[,] matrix, int rowNumber)
@@ -88,7 +71,7 @@ namespace ConsoleCalculator
             }
             return result;
         }
-        public static double[,] TransposeMatrix(double[,] matrix)
+        public static double[,] GetTransposeMatrix(double[,] matrix)
         {
             double[,] result = new double[matrix.GetLength(1), matrix.GetLength(0)];
             for (int row = 0; row < result.GetLength(1); row++)
@@ -160,9 +143,9 @@ namespace ConsoleCalculator
                     result[row, col] = Math.Pow(-1, row + col) * matrix[row, col];
             return result;
         }
-        public static double[,] InvertMatrix(double[,] matrix)
+        public static double[,] GetInvertMatrix(double[,] matrix)
         {
-            return MultiplyMatrixToNumber(TransposeMatrix(GetComplement(GetMinorMatrix(matrix))),
+            return MultiplyMatrixToNumber(GetTransposeMatrix(GetComplement(GetMinorMatrix(matrix))),
                 1 / GetDeterminant(matrix));
         }
     }

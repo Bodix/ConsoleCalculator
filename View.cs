@@ -21,95 +21,89 @@ namespace ConsoleCalculator
                         vectorSize = GetVectorSize();
                         v1 = GetVector(vectorSize, 1);
                         v2 = GetVector(vectorSize, 2);
-                        ShowVector(Matrix.AddVectorToVector(v1, v2));
+                        ShowVector(Vector.AddVectorToVector(v1, v2));
                         break;
                     case "v-v":
                         vectorSize = GetVectorSize();
                         v1 = GetVector(vectorSize, 1);
                         v2 = GetVector(vectorSize, 2);
-                        ShowVector(Matrix.DeductVectorFromVector(v1, v2));
+                        ShowVector(Vector.DeductVectorFromVector(v1, v2));
                         break;
                     case "v*n":
                         v1 = GetVector();
                         Console.Write("Число: ");
                         double n = Convert.ToDouble(Console.ReadLine());
-                        ShowVector(Matrix.MultiplyVectorToNumber(v1, n));
+                        ShowVector(Vector.MultiplyVectorToNumber(v1, n));
                         break;
                     case "vLen":
                         v1 = GetVector();
-                        Console.WriteLine("Результат: " + Matrix.GetVectorLength(v1));
+                        Console.WriteLine("Результат: " + Vector.GetVectorLength(v1));
                         Calculate();
                         break;
                     case "v*v":
                         vectorSize = GetVectorSize();
                         v1 = GetVector(vectorSize, 1);
                         v2 = GetVector(vectorSize, 2);
-                        Console.WriteLine("Результат: " + Matrix.MultiplyScalar(v1, v2));
+                        Console.WriteLine("Результат: " + Vector.MultiplyScalar(v1, v2));
                         Calculate();
                         break;
                 }
             }
             if (command == "/matrix")
             {
-                Console.WriteLine("Введите действие (m+m, m*n, mTrans, m*m, mDet, mInv):");
+                Console.WriteLine("Введите действие (m+m, m-m, m*n, m*v, m*m, mTrans, mDet, mInv):");
                 double[,] m1, m2;
-                switch (Console.ReadLine())
+                try
                 {
-                    case "m+m":
-                        m1 = GetMatrix(1);
-                        m2 = GetMatrix(2);
-                        try
-                        {
+                    switch (Console.ReadLine())
+                    {
+                        case "m+m":
+                            m1 = GetMatrix(1);
+                            m2 = GetMatrix(2);
                             ShowMatrix(Matrix.AddMatrixToMatrix(m1, m2));
-                        }
-                        catch (ArgumentException e)
-                        {
-                            Console.WriteLine(e.Message);
-                            Calculate();
-                        }
-                        break;
-                    case "m*n":
-                        m1 = GetMatrix();
-                        Console.Write("Число: ");
-                        double n = Convert.ToDouble(Console.ReadLine());
-                        ShowMatrix(Matrix.MultiplyMatrixToNumber(m1, n));
-                        break;
-                    case "mTrans":
-                        m1 = GetMatrix();
-                        ShowMatrix(Matrix.TransposeMatrix(m1));
-                        break;
-                    case "m*m":
-                        m1 = GetMatrix(1);
-                        m2 = GetMatrix(2);
-                        try
-                        {
+                            break;
+                        case "m-m":
+                            m1 = GetMatrix(1);
+                            m2 = GetMatrix(2);
+                            ShowMatrix(Matrix.DeductMatrixFromMatrix(m1, m2));
+                            break;
+                        case "m*n":
+                            m1 = GetMatrix();
+                            Console.Write("Число: ");
+                            double n = Convert.ToDouble(Console.ReadLine());
+                            ShowMatrix(Matrix.MultiplyMatrixToNumber(m1, n));
+                            break;
+                        case "m*v":
+                            m1 = GetMatrix();
+                            double[] v = GetVector();
+                            ShowVector(Matrix.MultiplyMatrixToVector(m1, v));
+                            break;
+                        case "m*m":
+                            m1 = GetMatrix(1);
+                            m2 = GetMatrix(2);
                             ShowMatrix(Matrix.MultiplyMatrixToMatrix(m1, m2));
-                        }
-                        catch (ArgumentException e)
-                        {
-                            Console.WriteLine(e.Message);
+                            break;
+                        case "mTrans":
+                            m1 = GetMatrix();
+                            ShowMatrix(Matrix.GetTransposeMatrix(m1));
+                            break;
+                        case "mDet":
+                            m1 = GetMatrix();
+                            Console.WriteLine("Результат: " + Matrix.GetDeterminant(m1));
                             Calculate();
-                        }
-                        break;
-                    case "mDet":
-                        m1 = GetMatrix();
-                        try
-                        {
-                        Console.WriteLine("Результат: " + Matrix.GetDeterminant(m1));
-                        Calculate();
-                        }
-                        catch (ArgumentException e)
-                        {
-                            Console.WriteLine(e.Message);
-                            Calculate();
-                        }
-                        break;
-                    case "mInv":
-                        m1 = GetMatrix();
-                        ShowMatrix(Matrix.InvertMatrix(m1));
-                        break;
+                            break;
+                        case "mInv":
+                            m1 = GetMatrix();
+                            ShowMatrix(Matrix.GetInvertMatrix(m1));
+                            break;
+                    }
                 }
-            }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Calculate();
+                }
+                }
             if (command == "/help")
             {
                 Console.WriteLine("Список команд:\n/vector - операции с векторами\n/matrix - операции с матрицами\n/clear - очистить консоль");
@@ -130,12 +124,12 @@ namespace ConsoleCalculator
         private static int GetVectorSize()
         {
             Console.Write("Размер: ");
-            return Convert.ToInt16(Console.ReadLine());
+            return Int16.Parse(Console.ReadLine());
         }
         private static double[] GetVector()
         {
-            double[] vector = new double[GetVectorSize()];
             Console.WriteLine("Вектор:");
+            double[] vector = new double[GetVectorSize()];
             for (int i = 0; i < vector.Length; i++)
             {
                 bool flag = true;
@@ -191,18 +185,32 @@ namespace ConsoleCalculator
         {
             Console.WriteLine("Матрица:");
             Console.Write("Кол-во строк: ");
-            int rows = Convert.ToInt16(Console.ReadLine());
+            int rows = Int16.Parse(Console.ReadLine());
             Console.Write("Кол-во столбцов: ");
-            int cols = Convert.ToInt16(Console.ReadLine());
+            int cols = Int16.Parse(Console.ReadLine());
             double[,] matrix = new double[rows, cols];
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < rows; i++)
             {
-                string s = Console.ReadLine();
-                int j = 0;
-                foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
+                bool flag = true;
+                while (flag)
                 {
-                    matrix[i, j++] = v;
+                    try
+                    {
+                        Console.Write((i + 1) + ": ");
+                        string s = Console.ReadLine();
+                        int j = 0;
+                        foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
+                        {
+                            matrix[i, j++] = v;
+                        }
+                        flag = false;
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Некорректное значение, попробуйте снова.");
+                    }
                 }
+
             }
             return matrix;
         }
@@ -210,18 +218,32 @@ namespace ConsoleCalculator
         {
             Console.WriteLine("Матрица " + index + ":");
             Console.Write("Кол-во строк: ");
-            int rows = Convert.ToInt16(Console.ReadLine());
+            int rows = Int16.Parse(Console.ReadLine());
             Console.Write("Кол-во столбцов: ");
-            int cols = Convert.ToInt16(Console.ReadLine());
+            int cols = Int16.Parse(Console.ReadLine());
             double[,] matrix = new double[rows, cols];
             for (int i = 0; i < rows; i++)
             {
-                string s = Console.ReadLine();
-                int j = 0;
-                foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
+                bool flag = true;
+                while (flag)
                 {
-                    matrix[i, j++] = v;
+                    try
+                    {
+                        Console.Write((i + 1) + ": ");
+                        string s = Console.ReadLine();
+                        int j = 0;
+                        foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
+                        {
+                            matrix[i, j++] = v;
+                        }
+                        flag = false;
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Некорректное значение, попробуйте снова.");
+                    }
                 }
+
             }
             return matrix;
         }
