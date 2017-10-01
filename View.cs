@@ -320,7 +320,7 @@ byIter - решить СЛАУ методом простых итераций");
                         }
                         flag = false;
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         ShowException("Некорректное значение, попробуйте снова.");
                     }
@@ -349,7 +349,7 @@ byIter - решить СЛАУ методом простых итераций");
                         }
                         flag = false;
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         ShowException("Некорректное значение, попробуйте снова.");
                     }
