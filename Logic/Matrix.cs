@@ -7,7 +7,7 @@ namespace ConsoleCalculator
         public static double[,] AddMatrixToMatrix(double[,] matrix1, double[,] matrix2)
         {
             if (matrix1.GetLength(0) != matrix2.GetLength(0) || matrix1.GetLength(1) != matrix2.GetLength(1))
-                throw new ArgumentException("Ошибка: Размерности матриц не совпадает.");
+                throw new ArgumentException("Ошибка: Размерности матриц не совпадают.");
             double[,] result = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
             for (int row = 0; row < result.GetLength(0); row++)
                 for (int col = 0; col < result.GetLength(1); col++)
@@ -17,7 +17,7 @@ namespace ConsoleCalculator
         public static double[,] DeductMatrixFromMatrix(double[,] matrix1, double[,] matrix2)
         {
             if (matrix1.GetLength(0) != matrix2.GetLength(0) || matrix1.GetLength(1) != matrix2.GetLength(1))
-                throw new ArgumentException("Ошибка: Размерности матриц не совпадает.");
+                throw new ArgumentException("Ошибка: Размерности матриц не совпадают.");
             double[,] result = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
             for (int row = 0; row < result.GetLength(0); row++)
                 for (int col = 0; col < result.GetLength(1); col++)
@@ -135,7 +135,7 @@ namespace ConsoleCalculator
                     result[row, col] = GetDeterminant(GetSubMatrix(matrix, row, col));
             return result;
         }
-        private static double[,] GetComplement(double[,] matrix)
+        private static double[,] GetCofactorMatrix(double[,] matrix)
         {
             double[,] result = new double[matrix.GetLength(0), matrix.GetLength(1)];
             for (int row = 0; row < result.GetLength(0); row++)
@@ -145,7 +145,7 @@ namespace ConsoleCalculator
         }
         public static double[,] GetInvertMatrix(double[,] matrix)
         {
-            return MultiplyMatrixToNumber(GetTransposeMatrix(GetComplement(GetMinorMatrix(matrix))),
+            return MultiplyMatrixToNumber(GetTransposeMatrix(GetCofactorMatrix(GetMinorMatrix(matrix))),
                 1 / GetDeterminant(matrix));
         }
     }

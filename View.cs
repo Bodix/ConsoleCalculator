@@ -100,13 +100,38 @@ namespace ConsoleCalculator
                 }
                 catch (ArgumentException e)
                 {
-                    Console.WriteLine(e.Message);
-                    Calculate();
+                    ShowException(e.Message);
                 }
+            }
+            if (command == "/system")
+            {
+                Console.WriteLine("Введите действие (byInv, byIter):");
+                double[,] a;
+                double[] b;
+                try
+                {
+                    switch (Console.ReadLine())
+                    {
+                        case "byInv":
+                            a = GetMatrix();
+                            b = GetVector();
+                            ShowVector(LinearSystem.SolveLSByInvertMatrix(a, b));
+                            break;
+                        case "byIter":
+                            a = GetMatrix();
+                            b = GetVector();
+                            ShowVector(LinearSystem.SolveLSBySimpleIterations(a, b));
+                            break;
+                    }
                 }
+                catch (ArgumentException e)
+                {
+                    ShowException(e.Message);
+                }
+            }
             if (command == "/help")
             {
-                Console.WriteLine("Список команд:\n/vector - операции с векторами\n/matrix - операции с матрицами\n/clear - очистить консоль");
+                Console.WriteLine("Список команд:\n/vector - операции с векторами\n/matrix - операции с матрицами\n/system - операции с системами линейных алгебраических уравненй (СЛАУ)\n/clear - очистить консоль");
                 Calculate();
             }
             if (command == "/clear")
@@ -120,11 +145,33 @@ namespace ConsoleCalculator
                 Calculate();
             }
         }
+        private static void ShowException(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Calculate();
+        }
 
+        #region Vector input/output.
         private static int GetVectorSize()
         {
-            Console.Write("Размер: ");
-            return Int16.Parse(Console.ReadLine());
+            int size = 0;
+            bool flag = true;
+            while (flag)
+            {
+                try
+                {
+                    Console.Write("Размер: ");
+                    size = Int16.Parse(Console.ReadLine());
+                    flag = false;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Некорректное значение, попробуйте снова.");
+                }
+            }
+            return size;
         }
         private static double[] GetVector()
         {
@@ -180,16 +227,52 @@ namespace ConsoleCalculator
             Console.WriteLine();
             Calculate();
         }
+        #endregion
 
+        #region Matrix input/output.
+        private static int GetNumberOfRows()
+        {
+            int rows = 0;
+            bool flag = true;
+            while (flag)
+            {
+                try
+                {
+                    Console.Write("Кол-во строк: ");
+                    rows = Int16.Parse(Console.ReadLine());
+                    flag = false;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Некорректное значение, попробуйте снова.");
+                }
+            }
+            return rows;
+        }
+        private static int GetNumberOfCols()
+        {
+            int cols = 0;
+            bool flag = true;
+            while (flag)
+            {
+                try
+                {
+                    Console.Write("Кол-во столбцов: ");
+                    cols = Int16.Parse(Console.ReadLine());
+                    flag = false;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Некорректное значение, попробуйте снова.");
+                }
+            }
+            return cols;
+        }
         private static double[,] GetMatrix()
         {
             Console.WriteLine("Матрица:");
-            Console.Write("Кол-во строк: ");
-            int rows = Int16.Parse(Console.ReadLine());
-            Console.Write("Кол-во столбцов: ");
-            int cols = Int16.Parse(Console.ReadLine());
-            double[,] matrix = new double[rows, cols];
-            for (int i = 0; i < rows; i++)
+            double[,] matrix = new double[GetNumberOfRows(), GetNumberOfCols()];
+            for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 bool flag = true;
                 while (flag)
@@ -217,12 +300,8 @@ namespace ConsoleCalculator
         private static double[,] GetMatrix(int index)
         {
             Console.WriteLine("Матрица " + index + ":");
-            Console.Write("Кол-во строк: ");
-            int rows = Int16.Parse(Console.ReadLine());
-            Console.Write("Кол-во столбцов: ");
-            int cols = Int16.Parse(Console.ReadLine());
-            double[,] matrix = new double[rows, cols];
-            for (int i = 0; i < rows; i++)
+            double[,] matrix = new double[GetNumberOfRows(), GetNumberOfCols()];
+            for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 bool flag = true;
                 while (flag)
@@ -260,5 +339,6 @@ namespace ConsoleCalculator
             }
             Calculate();
         }
+        #endregion
     }
 }

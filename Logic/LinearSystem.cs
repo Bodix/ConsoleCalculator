@@ -1,15 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ConsoleCalculator.Logic
+namespace ConsoleCalculator
 {
     class LinearSystem
     {
-        public double[] SolveLSByInvertMatrix(double[,] a, double[] b)
+        public static double eps = 1e-5;
+
+        public static double[] SolveLSByInvertMatrix(double[,] a, double[] b)
         {
             return Matrix.MultiplyMatrixToVector(Matrix.GetInvertMatrix(a), b);
+        }
+        private static bool IsMatrixConvergense(double[,] matrix)
+        {
+            double sum = 0;
+            for (int row = 0; row < matrix.GetLength(0); row++)
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                    sum += matrix[row, col] * matrix[row, col];
+            sum = Math.Sqrt(sum);
+            if (sum < 1)
+                return true;
+            else return false;
+        }
+        private static bool IsFinished(double[] previous, double[] next)
+        {
+            double[] difference = new double[previous.GetLength(0)];
+            for (int i = 0; i < difference.GetLength(0); i++)
+            {
+                difference[i] = Math.Abs(previous[i] - next[i]);
+                if (difference[i] > eps) return false;
+            }
+            return true;
+        }
+        public static double[] SolveLSBySimpleIterations(double [,] a, double [] b)
+        {
+            if (!IsMatrixConvergense(a))
+                throw new ArgumentException("Ошибка: Матрица не сходится.");
+            double[] prevResult = new double[a.GetLength(1)];
+            double[] nextResult = new double[a.GetLength(1)];
+            while (!IsFinished(prevResult, nextResult))
+            {
+                nextResult = Vector.AddVectorToVector(Matrix.MultiplyMatrixToVector(a, prevResult), b);
+            }
+            return nextResult;
         }
     }
 }
