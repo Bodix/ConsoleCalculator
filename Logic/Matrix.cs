@@ -74,9 +74,9 @@ namespace ConsoleCalculator
         public static double[,] GetTransposeMatrix(double[,] matrix)
         {
             double[,] result = new double[matrix.GetLength(1), matrix.GetLength(0)];
-            for (int row = 0; row < result.GetLength(1); row++)
-                for (int col = 0; col < result.GetLength(0); col++)
-                    result[row, col] = matrix[col, row];
+            for (int row = 0; row < matrix.GetLength(0); row++)
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                    result[col, row] = matrix[row, col];
             return result;
         }
         private static double[,] RemoveRow(double[,] matrix, int rowToRemove)

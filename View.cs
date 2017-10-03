@@ -5,6 +5,8 @@ namespace ConsoleCalculator
 {
     class View
     {
+        static string formatException = "Ошибка: Некорректное значение, попробуйте снова. Используйте /cancel для отмены";
+
         public static void Calculate()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -155,7 +157,7 @@ byIter - решить СЛАУ методом простых итераций");
             }
             if (command == "/help")
             {
-                Console.WriteLine("Список команд:\n/vector - операции с векторами\n/matrix - операции с матрицами\n/system - операции с системами линейных алгебраических уравненй (СЛАУ)\n/clear - очистить консоль");
+                Console.WriteLine("Список команд:\n/vector - операции с векторами\n/matrix - операции с матрицами\n/system - операции с системами линейных алгебраических уравненй (СЛАУ)\n/clear - очистить консоль\n/exit - выход");
                 Calculate();
             }
             if (command == "/clear")
@@ -164,6 +166,10 @@ byIter - решить СЛАУ методом простых итераций");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("\"Console Calculator\" by Bogdan Nikolaev (IT-36a, NTU \"KhPI\")");
                 Calculate();
+            }
+            if (command == "/exit")
+            {
+                Environment.Exit(0);
             }
             else
             {
@@ -195,12 +201,17 @@ byIter - решить СЛАУ методом простых итераций");
                 try
                 {
                     Console.Write("Размер: ");
-                    size = Int16.Parse(GetInput());
+                    string input = GetInput();
+                    if (input == "/cancel")
+                    {
+                        Calculate();
+                    }
+                    size = Int16.Parse(input);
                     flag = false;
                 }
                 catch (FormatException)
                 {
-                    ShowException("Некорректное значение, попробуйте снова.");
+                    ShowException(formatException);
                 }
             }
             return size;
@@ -217,12 +228,17 @@ byIter - решить СЛАУ методом простых итераций");
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        vector[i] = Convert.ToDouble(GetInput());
+                        string input = GetInput();
+                        if (input == "/cancel")
+                        {
+                            Calculate();
+                        }
+                        vector[i] = Convert.ToDouble(input);
                         flag = false;
                     }
                     catch (FormatException)
                     {
-                        ShowException("Некорректное значение, попробуйте снова.");
+                        ShowException(formatException);
                     }
                 }
             }
@@ -240,12 +256,17 @@ byIter - решить СЛАУ методом простых итераций");
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        vector[i] = Convert.ToDouble(GetInput());
+                        string input = GetInput();
+                        if (input == "/cancel")
+                        {
+                            Calculate();
+                        }
+                        vector[i] = Convert.ToDouble(input);
                         flag = false;
                     }
                     catch (FormatException)
                     {
-                        ShowException("Некорректное значение, попробуйте снова.");
+                        ShowException(formatException);
                     }
                 }
             }
@@ -255,7 +276,7 @@ byIter - решить СЛАУ методом простых итераций");
         {
             Console.WriteLine("Результат: ");
             for (int i = 0; i < vector.Length; i++)
-                Console.Write("{0:F3} ", vector[i]);
+                Console.Write("{0:0.###}\t", vector[i]);
             Console.WriteLine();
             Calculate();
         }
@@ -271,12 +292,17 @@ byIter - решить СЛАУ методом простых итераций");
                 try
                 {
                     Console.Write("Кол-во строк: ");
-                    rows = Int16.Parse(GetInput());
+                    string input = GetInput();
+                    if (input == "/cancel")
+                    {
+                        Calculate();
+                    }
+                    rows = Int16.Parse(input);
                     flag = false;
                 }
                 catch (FormatException)
                 {
-                    ShowException("Некорректное значение, попробуйте снова.");
+                    ShowException(formatException);
                 }
             }
             return rows;
@@ -290,12 +316,17 @@ byIter - решить СЛАУ методом простых итераций");
                 try
                 {
                     Console.Write("Кол-во столбцов: ");
-                    cols = Int16.Parse(GetInput());
+                    string input = GetInput();
+                    if (input == "/cancel")
+                    {
+                        Calculate();
+                    }
+                    cols = Int16.Parse(input);
                     flag = false;
                 }
                 catch (FormatException)
                 {
-                    ShowException("Некорректное значение, попробуйте снова.");
+                    ShowException(formatException);
                 }
             }
             return cols;
@@ -312,9 +343,13 @@ byIter - решить СЛАУ методом простых итераций");
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        string s = GetInput();
+                        string input = GetInput();
+                        if (input == "/cancel")
+                        {
+                            Calculate();
+                        }
                         int j = 0;
-                        foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
+                        foreach (int v in input.Split(' ').Select(v => Convert.ToInt32(v)))
                         {
                             matrix[i, j++] = v;
                         }
@@ -322,7 +357,7 @@ byIter - решить СЛАУ методом простых итераций");
                     }
                     catch (Exception)
                     {
-                        ShowException("Некорректное значение, попробуйте снова.");
+                        ShowException(formatException);
                     }
                 }
 
@@ -341,9 +376,13 @@ byIter - решить СЛАУ методом простых итераций");
                     try
                     {
                         Console.Write((i + 1) + ": ");
-                        string s = GetInput();
+                        string input = GetInput();
+                        if (input == "/cancel")
+                        {
+                            Calculate();
+                        }
                         int j = 0;
-                        foreach (int v in s.Split(' ').Select(v => Convert.ToInt32(v)))
+                        foreach (int v in input.Split(' ').Select(v => Convert.ToInt32(v)))
                         {
                             matrix[i, j++] = v;
                         }
@@ -351,7 +390,7 @@ byIter - решить СЛАУ методом простых итераций");
                     }
                     catch (Exception)
                     {
-                        ShowException("Некорректное значение, попробуйте снова.");
+                        ShowException(formatException);
                     }
                 }
 
@@ -365,7 +404,7 @@ byIter - решить СЛАУ методом простых итераций");
             {
                 for (int j = 0; j < matrix.GetLength(1); ++j)
                 {
-                    Console.Write("{0:F3}\t", matrix[i, j]);
+                    Console.Write("{0:0.###}\t", matrix[i, j]);
                 }
                 Console.WriteLine();
             }
