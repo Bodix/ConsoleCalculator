@@ -12,7 +12,7 @@ namespace ConsoleCalculator
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nВведите команду:");
             Console.Write("> ");
-            string command = GetInput();
+            string command = GetInput().ToLower();
             if (command == "/simple")
             {
                 Console.WriteLine("Введите выражение: ");
@@ -38,7 +38,7 @@ v*v - скалярное произведение векторов");
                 Console.Write("Действие: ");
                 int vectorSize;
                 double[] v1, v2;
-                switch (GetInput())
+                switch (GetInput().ToLower())
                 {
                     case "v+v":
                         vectorSize = GetVectorSize();
@@ -85,7 +85,7 @@ mInv - обратная матрица");
                 double[,] m1, m2;
                 try
                 {
-                    switch (GetInput())
+                    switch (GetInput().ToLower())
                     {
                         case "m+m":
                             m1 = GetMatrix(1);
@@ -126,7 +126,7 @@ mInv - обратная матрица");
                             break;
                     }
                 }
-                catch (ArgumentException e)
+                catch (Exception e)
                 {
                     ShowException(e.Message);
                     Calculate();
@@ -143,7 +143,7 @@ byIter - решить СЛАУ методом простых итераций");
                 double[] b;
                 try
                 {
-                    switch (GetInput())
+                    switch (GetInput().ToLower())
                     {
                         case "byInv":
                             a = GetMatrix();
@@ -157,7 +157,7 @@ byIter - решить СЛАУ методом простых итераций");
                             break;
                     }
                 }
-                catch (ArgumentException e)
+                catch (Exception e)
                 {
                     ShowException(e.Message);
                     Calculate();

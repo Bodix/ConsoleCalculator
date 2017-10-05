@@ -15,7 +15,7 @@ namespace ConsoleCalculator
         public static double[] SolveLSBySimpleIterations(double [,] a, double [] b)
         {
             if (!IsMatrixConvergense(a))
-                throw new ArgumentException("Ошибка: Матрица не сходится.");
+                throw new Exception("Ошибка: Матрица не сходится.");
             double[] prevResult = new double[a.GetLength(1)];
             double[] nextResult = Vector.AddVectorToVector(Matrix.MultiplyMatrixToVector(a, prevResult), b);
             while (!IsIterationsFinished(prevResult, nextResult))
