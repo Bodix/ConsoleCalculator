@@ -7,34 +7,34 @@ namespace ConsoleCalculator
     {
         static string formatException = "Ошибка: Некорректное значение, попробуйте снова. Используйте /cancel для отмены";
 
-        public static void Calculate()
+        public static void Command()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nВведите команду:");
             Console.Write("> ");
             string command = GetInput().ToLower();
-            if (command == "/simple")
+            if (command == "/calc")
             {
                 Console.WriteLine("Введите выражение: ");
                 try
                 {
-                    ShowNumber(Arithmetic.Calculate(GetInput()));
+                    ShowNumber(Arithmetic.Solve(GetInput()));
                 }
                 catch (Exception e)
                 {
                     ShowException(e.Message);
-                    Calculate();
+                    Command();
                 }
             }
-            if (command == "/vector")
+            if (command == "/vec")
             {
                 Console.WriteLine(
 @"Доступные действия:
 v+v - сложение векторов
 v-v - вычитание векторов
 v*n - умножение вектора на число
-vLen - длинна вектора
-v*v - скалярное произведение векторов");
+v*v - скалярное произведение векторов
+len - длина вектора");
                 Console.Write("Действие: ");
                 int vectorSize;
                 double[] v1, v2;
@@ -57,19 +57,19 @@ v*v - скалярное произведение векторов");
                         double n = GetNumber();
                         ShowVector(Vector.MultiplyVectorToNumber(v1, n));
                         break;
-                    case "vLen":
-                        v1 = GetVector();
-                        ShowNumber(Vector.GetVectorLength(v1));
-                        break;
                     case "v*v":
                         vectorSize = GetVectorSize();
                         v1 = GetVector(vectorSize, 1);
                         v2 = GetVector(vectorSize, 2);
                         ShowNumber(Vector.MultiplyScalar(v1, v2));
                         break;
+                    case "len":
+                        v1 = GetVector();
+                        ShowNumber(Vector.GetVectorLength(v1));
+                        break;
                 }
             }
-            if (command == "/matrix")
+            if (command == "/mat")
             {
                 Console.WriteLine(
 @"Доступные действия:
@@ -78,9 +78,9 @@ m-m - вычитание матриц
 m*n - умножение матрицы на число
 m*v - умножение матрицы на вектор
 m*m - умножение матрицы на матрицу
-mTrans - транспонирование матрицы
-mDet - определитель матрицы
-mInv - обратная матрица");
+trans - транспонирование матрицы
+det - определитель матрицы
+inv - обратная матрица");
                 Console.Write("Действие: ");
                 double[,] m1, m2;
                 try
@@ -112,15 +112,15 @@ mInv - обратная матрица");
                             m2 = GetMatrix(2);
                             ShowMatrix(Matrix.MultiplyMatrixToMatrix(m1, m2));
                             break;
-                        case "mTrans":
+                        case "trans":
                             m1 = GetMatrix();
                             ShowMatrix(Matrix.GetTransposeMatrix(m1));
                             break;
-                        case "mDet":
+                        case "det":
                             m1 = GetMatrix();
                             ShowNumber(Matrix.GetDeterminant(m1));
                             break;
-                        case "mInv":
+                        case "inv":
                             m1 = GetMatrix();
                             ShowMatrix(Matrix.GetInvertMatrix(m1));
                             break;
@@ -129,15 +129,15 @@ mInv - обратная матрица");
                 catch (Exception e)
                 {
                     ShowException(e.Message);
-                    Calculate();
+                    Command();
                 }
             }
-            if (command == "/linear")
+            if (command == "/lin")
             {
                 Console.WriteLine(
 @"Доступные действия:
-byInv - решить СЛАУ методом обратной матрицы
-byIter - решить СЛАУ методом простых итераций");
+inv - решить СЛАУ методом обратной матрицы
+iter - решить СЛАУ методом простых итераций");
                 Console.Write("Действие: ");
                 double[,] a;
                 double[] b;
@@ -145,12 +145,12 @@ byIter - решить СЛАУ методом простых итераций");
                 {
                     switch (GetInput().ToLower())
                     {
-                        case "byInv":
+                        case "inv":
                             a = GetMatrix();
                             b = GetVector();
                             ShowVector(LinearSystem.SolveLSByInvertMatrix(a, b));
                             break;
-                        case "byIter":
+                        case "iter":
                             a = GetMatrix();
                             b = GetVector();
                             ShowVector(LinearSystem.SolveLSBySimpleIterations(a, b));
@@ -160,20 +160,45 @@ byIter - решить СЛАУ методом простых итераций");
                 catch (Exception e)
                 {
                     ShowException(e.Message);
-                    Calculate();
+                    Command();
+                }
+            }
+            if (command == "/nlin")
+            {
+                Console.WriteLine(
+@"Доступные действия:
+bis - решить уравнение методом половинного деления (бисекции)");
+                Console.Write("Действие: ");
+                double a;
+                double b;
+                try
+                {
+                    switch (GetInput().ToLower())
+                    {
+                        case "bis":
+                            a = GetNumber();
+                            b = GetNumber();
+                            ShowNumber(AlgebraicEquations.SolveByBisection(a, b));
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    ShowException(e.Message);
+                    Command();
                 }
             }
             if (command == "/help")
             {
-                Console.WriteLine("Список команд:\n/simple - простые операции\n/vector - операции с векторами\n/matrix - операции с матрицами\n/linear - операции с системами линейных алгебраических уравненй (СЛАУ)\n/clear - очистить консоль\n/exit - выход");
-                Calculate();
+                Console.WriteLine("Список команд:\n/calc - простые операции\n/vec - операции с векторами\n/mat - операции с матрицами\n/lin - операции с системами линейных алгебраических уравнений (СЛАУ)\n/nlin - операции с нелинейными уравнений\n/clear - очистить консоль\n/exit - выход");
+                Command();
             }
             if (command == "/clear")
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("\"Console Calculator\" by Bogdan Nikolaev (IT-36a, NTU \"KhPI\")");
-                Calculate();
+                Command();
             }
             if (command == "/exit")
             {
@@ -182,7 +207,7 @@ byIter - решить СЛАУ методом простых итераций");
             else
             {
                 Console.WriteLine("Команда не найдена (/help).");
-                Calculate();
+                Command();
             }
         }
         private static string GetInput()
@@ -222,7 +247,7 @@ byIter - решить СЛАУ методом простых итераций");
         private static void ShowNumber(double number)
         {
             Console.WriteLine("Результат: " + number);
-            Calculate();
+            Command();
         }
         #endregion
 
@@ -239,7 +264,7 @@ byIter - решить СЛАУ методом простых итераций");
                     string input = GetInput();
                     if (input == "/cancel")
                     {
-                        Calculate();
+                        Command();
                     }
                     size = Int16.Parse(input);
                     flag = false;
@@ -266,7 +291,7 @@ byIter - решить СЛАУ методом простых итераций");
                         string input = GetInput();
                         if (input == "/cancel")
                         {
-                            Calculate();
+                            Command();
                         }
                         vector[i] = Convert.ToDouble(input);
                         flag = false;
@@ -294,7 +319,7 @@ byIter - решить СЛАУ методом простых итераций");
                         string input = GetInput();
                         if (input == "/cancel")
                         {
-                            Calculate();
+                            Command();
                         }
                         vector[i] = Convert.ToDouble(input);
                         flag = false;
@@ -313,7 +338,7 @@ byIter - решить СЛАУ методом простых итераций");
             for (int i = 0; i < vector.Length; i++)
                 Console.Write("{0:0.###}\t", vector[i]);
             Console.WriteLine();
-            Calculate();
+            Command();
         }
         #endregion
 
@@ -330,7 +355,7 @@ byIter - решить СЛАУ методом простых итераций");
                     string input = GetInput();
                     if (input == "/cancel")
                     {
-                        Calculate();
+                        Command();
                     }
                     rows = Int16.Parse(input);
                     flag = false;
@@ -354,7 +379,7 @@ byIter - решить СЛАУ методом простых итераций");
                     string input = GetInput();
                     if (input == "/cancel")
                     {
-                        Calculate();
+                        Command();
                     }
                     cols = Int16.Parse(input);
                     flag = false;
@@ -381,7 +406,7 @@ byIter - решить СЛАУ методом простых итераций");
                         string input = GetInput();
                         if (input == "/cancel")
                         {
-                            Calculate();
+                            Command();
                         }
                         int j = 0;
                         foreach (int v in input.Split(' ').Select(v => Convert.ToDouble(v)))
@@ -414,7 +439,7 @@ byIter - решить СЛАУ методом простых итераций");
                         string input = GetInput();
                         if (input == "/cancel")
                         {
-                            Calculate();
+                            Command();
                         }
                         int j = 0;
                         foreach (int v in input.Split(' ').Select(v => Convert.ToDouble(v)))
@@ -443,7 +468,7 @@ byIter - решить СЛАУ методом простых итераций");
                 }
                 Console.WriteLine();
             }
-            Calculate();
+            Command();
         }
         #endregion
     }

@@ -9,7 +9,7 @@ namespace ConsoleCalculator
     {
         public static double F(double x)
         {
-            return Math.Pow(x, 2) - 4;
+            return (5 * Math.Pow(x, 2)) - (4 * x) + 1;
         }
     }
 }

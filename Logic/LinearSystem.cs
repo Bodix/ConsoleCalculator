@@ -5,7 +5,7 @@ namespace ConsoleCalculator
     class LinearSystem
     {
         public static double eps = 1e-5;
-
+        
         // x = A^-1 * b
         public static double[] SolveLSByInvertMatrix(double[,] a, double[] b)
         {

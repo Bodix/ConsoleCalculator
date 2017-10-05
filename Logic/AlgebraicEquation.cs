@@ -7,11 +7,11 @@ using System.Diagnostics;
 
 namespace ConsoleCalculator
 {
-    class NonLinearSystem
+    class AlgebraicEquations
     {
         public static double eps = 1e-5;
 
-        public static double SolveByDichotomy(double a, double b)
+        public static double SolveByBisection(double a, double b)
         {
             while (Math.Abs(a - b) > eps)
             {
