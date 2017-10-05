@@ -12,7 +12,20 @@ namespace ConsoleCalculator
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\nВведите команду:");
             Console.Write("> ");
-            string command = GetInput().ToString();
+            string command = GetInput();
+            if (command == "/simple")
+            {
+                Console.WriteLine("Введите выражение: ");
+                try
+                {
+                    ShowNumber(Arithmetic.Calculate(GetInput()));
+                }
+                catch (Exception e)
+                {
+                    ShowException(e.Message);
+                    Calculate();
+                }
+            }
             if (command == "/vector")
             {
                 Console.WriteLine(
@@ -41,21 +54,18 @@ v*v - скалярное произведение векторов");
                         break;
                     case "v*n":
                         v1 = GetVector();
-                        Console.Write("Число: ");
-                        double n = Convert.ToDouble(GetInput());
+                        double n = GetNumber();
                         ShowVector(Vector.MultiplyVectorToNumber(v1, n));
                         break;
                     case "vLen":
                         v1 = GetVector();
-                        Console.WriteLine("Результат: " + Vector.GetVectorLength(v1));
-                        Calculate();
+                        ShowNumber(Vector.GetVectorLength(v1));
                         break;
                     case "v*v":
                         vectorSize = GetVectorSize();
                         v1 = GetVector(vectorSize, 1);
                         v2 = GetVector(vectorSize, 2);
-                        Console.WriteLine("Результат: " + Vector.MultiplyScalar(v1, v2));
-                        Calculate();
+                        ShowNumber(Vector.MultiplyScalar(v1, v2));
                         break;
                 }
             }
@@ -89,8 +99,7 @@ mInv - обратная матрица");
                             break;
                         case "m*n":
                             m1 = GetMatrix();
-                            Console.Write("Число: ");
-                            double n = Convert.ToDouble(GetInput());
+                            double n = GetNumber();
                             ShowMatrix(Matrix.MultiplyMatrixToNumber(m1, n));
                             break;
                         case "m*v":
@@ -109,8 +118,7 @@ mInv - обратная матрица");
                             break;
                         case "mDet":
                             m1 = GetMatrix();
-                            Console.WriteLine("Результат: " + Matrix.GetDeterminant(m1));
-                            Calculate();
+                            ShowNumber(Matrix.GetDeterminant(m1));
                             break;
                         case "mInv":
                             m1 = GetMatrix();
@@ -124,7 +132,7 @@ mInv - обратная матрица");
                     Calculate();
                 }
             }
-            if (command == "/system")
+            if (command == "/linear")
             {
                 Console.WriteLine(
 @"Доступные действия:
@@ -157,7 +165,7 @@ byIter - решить СЛАУ методом простых итераций");
             }
             if (command == "/help")
             {
-                Console.WriteLine("Список команд:\n/vector - операции с векторами\n/matrix - операции с матрицами\n/system - операции с системами линейных алгебраических уравненй (СЛАУ)\n/clear - очистить консоль\n/exit - выход");
+                Console.WriteLine("Список команд:\n/simple - простые операции\n/vector - операции с векторами\n/matrix - операции с матрицами\n/linear - операции с системами линейных алгебраических уравненй (СЛАУ)\n/clear - очистить консоль\n/exit - выход");
                 Calculate();
             }
             if (command == "/clear")
@@ -190,6 +198,33 @@ byIter - решить СЛАУ методом простых итераций");
             Console.WriteLine(message);
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
+
+        #region Number input/output.
+        private static double GetNumber()
+        {
+            double number = 0;
+            bool flag = true;
+            while (flag)
+            {
+                try
+                {
+                    Console.Write("Число: ");
+                    number = Convert.ToDouble(GetInput());
+                    flag = false;
+                }
+                catch (FormatException)
+                {
+                    ShowException(formatException);
+                }
+            }
+            return number;
+        }
+        private static void ShowNumber(double number)
+        {
+            Console.WriteLine("Результат: " + number);
+            Calculate();
+        }
+        #endregion
 
         #region Vector input/output.
         private static int GetVectorSize()
@@ -349,7 +384,7 @@ byIter - решить СЛАУ методом простых итераций");
                             Calculate();
                         }
                         int j = 0;
-                        foreach (int v in input.Split(' ').Select(v => Convert.ToInt32(v)))
+                        foreach (int v in input.Split(' ').Select(v => Convert.ToDouble(v)))
                         {
                             matrix[i, j++] = v;
                         }
@@ -382,7 +417,7 @@ byIter - решить СЛАУ методом простых итераций");
                             Calculate();
                         }
                         int j = 0;
-                        foreach (int v in input.Split(' ').Select(v => Convert.ToInt32(v)))
+                        foreach (int v in input.Split(' ').Select(v => Convert.ToDouble(v)))
                         {
                             matrix[i, j++] = v;
                         }

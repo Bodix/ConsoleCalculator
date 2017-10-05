@@ -79,6 +79,18 @@ namespace ConsoleCalculator
                     result[col, row] = matrix[row, col];
             return result;
         }
+        public static double GetDeterminant(double[,] matrix)
+        {
+            if (matrix.GetLength(0) != matrix.GetLength(1))
+                throw new ArgumentException("Ошибка: Матрица не квадратная.");
+            double result = 0;
+            if (matrix.GetLength(0) == 1 && matrix.GetLength(1) == 1)
+                result = matrix[0, 0];
+            else
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                    result += Math.Pow(-1, col) * matrix[0, col] * GetDeterminant(GetSubMatrix(matrix, 0, col));
+            return result;
+        }
         private static double[,] RemoveRow(double[,] matrix, int rowToRemove)
         {
             double[,] result = new double[matrix.GetLength(0) - 1, matrix.GetLength(1)];
@@ -115,17 +127,10 @@ namespace ConsoleCalculator
             result = RemoveRow(RemoveColumn(matrix, colToRemove), rowToRemove);
             return result;
         }
-        public static double GetDeterminant(double[,] matrix)
+        public static double[,] GetInvertMatrix(double[,] matrix)
         {
-            if (matrix.GetLength(0) != matrix.GetLength(1))
-                throw new ArgumentException("Ошибка: Матрица не квадратная.");
-            double result = 0;
-            if (matrix.GetLength(0) == 1 && matrix.GetLength(1) == 1)
-                result = matrix[0, 0];
-            else
-                for (int col = 0; col < matrix.GetLength(1); col++)
-                    result += Math.Pow(-1, col) * matrix[0, col] * GetDeterminant(GetSubMatrix(matrix, 0, col));
-            return result;
+            return MultiplyMatrixToNumber(GetTransposeMatrix(GetCofactorMatrix(GetMinorMatrix(matrix))),
+                1 / GetDeterminant(matrix));
         }
         private static double[,] GetMinorMatrix(double[,] matrix)
         {
@@ -142,11 +147,6 @@ namespace ConsoleCalculator
                 for (int col = 0; col < result.GetLength(1); col++)
                     result[row, col] = Math.Pow(-1, row + col) * matrix[row, col];
             return result;
-        }
-        public static double[,] GetInvertMatrix(double[,] matrix)
-        {
-            return MultiplyMatrixToNumber(GetTransposeMatrix(GetCofactorMatrix(GetMinorMatrix(matrix))),
-                1 / GetDeterminant(matrix));
         }
     }
 }

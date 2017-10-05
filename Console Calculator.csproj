@@ -58,7 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\Arithmetic.cs" />
+    <Compile Include="Logic\Function.cs" />
     <Compile Include="Logic\LinearSystem.cs" />
+    <Compile Include="Logic\NonLinearSystem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logic\Matrix.cs" />

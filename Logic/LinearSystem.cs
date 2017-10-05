@@ -6,9 +6,24 @@ namespace ConsoleCalculator
     {
         public static double eps = 1e-5;
 
+        // x = A^-1 * b
         public static double[] SolveLSByInvertMatrix(double[,] a, double[] b)
         {
             return Matrix.MultiplyMatrixToVector(Matrix.GetInvertMatrix(a), b);
+        }
+        // x = Ax + b
+        public static double[] SolveLSBySimpleIterations(double [,] a, double [] b)
+        {
+            if (!IsMatrixConvergense(a))
+                throw new ArgumentException("Ошибка: Матрица не сходится.");
+            double[] prevResult = new double[a.GetLength(1)];
+            double[] nextResult = Vector.AddVectorToVector(Matrix.MultiplyMatrixToVector(a, prevResult), b);
+            while (!IsIterationsFinished(prevResult, nextResult))
+            {
+                prevResult = nextResult;
+                nextResult = Vector.AddVectorToVector(Matrix.MultiplyMatrixToVector(a, prevResult), b);
+            }
+            return nextResult;
         }
         private static bool IsMatrixConvergense(double[,] matrix)
         {
@@ -21,7 +36,7 @@ namespace ConsoleCalculator
                 return true;
             else return false;
         }
-        private static bool IsFinished(double[] previous, double[] next)
+        private static bool IsIterationsFinished(double[] previous, double[] next)
         {
             double[] difference = new double[previous.GetLength(0)];
             for (int i = 0; i < difference.GetLength(0); i++)
@@ -30,18 +45,6 @@ namespace ConsoleCalculator
                 if (difference[i] > eps) return false;
             }
             return true;
-        }
-        public static double[] SolveLSBySimpleIterations(double [,] a, double [] b)
-        {
-            if (!IsMatrixConvergense(a))
-                throw new ArgumentException("Ошибка: Матрица не сходится.");
-            double[] prevResult = new double[a.GetLength(1)];
-            double[] nextResult = new double[a.GetLength(1)];
-            while (!IsFinished(prevResult, nextResult))
-            {
-                nextResult = Vector.AddVectorToVector(Matrix.MultiplyMatrixToVector(a, prevResult), b);
-            }
-            return nextResult;
         }
     }
 }
