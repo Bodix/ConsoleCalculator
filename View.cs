@@ -20,9 +20,9 @@ namespace ConsoleCalculator
                 {
                     ShowNumber(Arithmetic.Solve(GetInput()));
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    ShowException(e.Message);
+                    ShowException("Ошибка: В выражении была допущена ошибка.");
                     Command();
                 }
             }

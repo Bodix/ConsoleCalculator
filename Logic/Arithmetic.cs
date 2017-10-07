@@ -17,26 +17,51 @@ namespace ConsoleCalculator
         }
         private static string OpenBrackets(string expression)
         {
-            int indexBegin = expression.IndexOf("(");
-            int indexEnd = expression.LastIndexOf(")");
-            int length = indexEnd - indexBegin;
-            string newExpression = expression.Substring(indexBegin + 1, length - 1);
+            string newExpression = GetSubstring(expression);
             if (newExpression.IndexOf("(") == -1)
             {
                 return expression.Replace("(" + newExpression + ")", Calculate(newExpression).ToString());
             }
             return expression.Replace("(" + newExpression + ")", Calculate(OpenBrackets(newExpression)).ToString());
         }
-
+        private static string GetSubstring(string expression)
+        {
+            string substring = expression.Substring(expression.IndexOf("(") + 1, expression.Length - expression.IndexOf("(") - 1);
+            int i = 0;
+            int balance = 1;
+            while (i < substring.Length)
+            {
+                if (substring[i] == '(') balance++;
+                if (substring[i] == ')') balance--;
+                if (balance == 0) break;
+                i++;
+            }
+            return substring.Substring(0, i);
+        }
         private static double Calculate(string expression)
         {
-            List<string> list = Regex.Split(expression, @"(\+)|(-)|(\*)|(/)").ToList();
+            List<string> list = Regex.Split(expression, @"(\+)|(-)|(\*)|(/)|(\^)").ToList();
             while (list.Count != 1)
             {
+                Exponentiation(list);
                 MultiplyAndDivide(list);
                 AddAndDeduct(list);
             }
             return Convert.ToDouble(list[0]);
+        }
+        private static void Exponentiation(List<string> list)
+        {
+            int index = 0;
+            while (index != -1)
+            {
+                index = list.IndexOf("^");
+                if (index != -1)
+                {
+                    list[index] = Math.Pow(Convert.ToDouble(list[index - 1]), Convert.ToDouble(list[index + 1])).ToString();
+                    list.RemoveAt(index + 1);
+                    list.RemoveAt(index - 1);
+                }
+            }
         }
         private static void MultiplyAndDivide(List<string> list)
         {
@@ -46,7 +71,7 @@ namespace ConsoleCalculator
                 index = list.IndexOf("*");
                 if (index != -1)
                 {
-                    list[index] = Multiply(Convert.ToDouble(list[index - 1]), Convert.ToDouble(list[index + 1])).ToString();
+                    list[index] = (Convert.ToDouble(list[index - 1]) * Convert.ToDouble(list[index + 1])).ToString();
                     list.RemoveAt(index + 1);
                     list.RemoveAt(index - 1);
                 }
@@ -57,7 +82,7 @@ namespace ConsoleCalculator
                 index = list.IndexOf("/");
                 if (index != -1)
                 {
-                    list[index] = Divide(Convert.ToDouble(list[index - 1]), Convert.ToDouble(list[index + 1])).ToString();
+                    list[index] = (Convert.ToDouble(list[index - 1]) / Convert.ToDouble(list[index + 1])).ToString();
                     list.RemoveAt(index + 1);
                     list.RemoveAt(index - 1);
                 }
@@ -71,7 +96,7 @@ namespace ConsoleCalculator
                 index = list.IndexOf("+");
                 if (index != -1)
                 {
-                    list[index] = Add(Convert.ToDouble(list[index - 1]), Convert.ToDouble(list[index + 1])).ToString();
+                    list[index] = (Convert.ToDouble(list[index - 1]) + Convert.ToDouble(list[index + 1])).ToString();
                     list.RemoveAt(index + 1);
                     list.RemoveAt(index - 1);
                 }
@@ -82,15 +107,11 @@ namespace ConsoleCalculator
                 index = list.IndexOf("-");
                 if (index != -1)
                 {
-                    list[index] = Deduct(Convert.ToDouble(list[index - 1]), Convert.ToDouble(list[index + 1])).ToString();
+                    list[index] = (Convert.ToDouble(list[index - 1]) - Convert.ToDouble(list[index + 1])).ToString();
                     list.RemoveAt(index + 1);
                     list.RemoveAt(index - 1);
                 }
             }
         }
-        private static double Add(double a, double b) { return a + b; }
-        private static double Deduct(double a, double b) { return a - b; }
-        private static double Multiply(double a, double b) { return a * b; }
-        private static double Divide(double a, double b) { return a / b; }
     }
 }

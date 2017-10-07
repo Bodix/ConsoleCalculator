@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
-using System.Diagnostics;
 
 namespace ConsoleCalculator
 {
@@ -17,9 +12,9 @@ namespace ConsoleCalculator
             {
                 double m = (a + b) / 2;
                 if (Function.F(a) * Function.F(m) > 0)
-                { a = m; }
+                    a = m;
                 if (Function.F(b) * Function.F(m) > 0)
-                { b = m; }
+                    b = m;
             }
             return (a + b) / 2;
         }
