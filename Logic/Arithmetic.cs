@@ -17,12 +17,14 @@ namespace ConsoleCalculator
         }
         private static string OpenBrackets(string expression)
         {
-            string newExpression = GetSubstring(expression);
-            if (newExpression.IndexOf("(") == -1)
+            if (expression.IndexOf('(') == -1)
+                return Calculate(expression).ToString();
+            while (expression.IndexOf('(') != -1)
             {
-                return expression.Replace("(" + newExpression + ")", Calculate(newExpression).ToString());
+                string newExpression = GetSubstring(expression);
+                expression = expression.Replace("(" + newExpression + ")", OpenBrackets(newExpression));
             }
-            return expression.Replace("(" + newExpression + ")", Calculate(OpenBrackets(newExpression)).ToString());
+            return Calculate(expression).ToString();
         }
         private static string GetSubstring(string expression)
         {
@@ -40,7 +42,7 @@ namespace ConsoleCalculator
         }
         private static double Calculate(string expression)
         {
-            List<string> list = Regex.Split(expression, @"(\+)|(-)|(\*)|(/)|(\^)").ToList();
+            List<string> list = Regex.Split(expression, @"(\+|(?<=\d *)-|\*|/|\^)").ToList();
             while (list.Count != 1)
             {
                 Exponentiation(list);
@@ -51,65 +53,65 @@ namespace ConsoleCalculator
         }
         private static void Exponentiation(List<string> list)
         {
-            int index = 0;
-            while (index != -1)
+            int i = 0;
+            while (i != -1)
             {
-                index = list.IndexOf("^");
-                if (index != -1)
+                i = list.IndexOf("^");
+                if (i != -1)
                 {
-                    list[index] = Math.Pow(Convert.ToDouble(list[index - 1]), Convert.ToDouble(list[index + 1])).ToString();
-                    list.RemoveAt(index + 1);
-                    list.RemoveAt(index - 1);
+                    list[i] = Math.Pow(Convert.ToDouble(list[i - 1]), Convert.ToDouble(list[i + 1])).ToString();
+                    list.RemoveAt(i + 1);
+                    list.RemoveAt(i - 1);
                 }
             }
         }
         private static void MultiplyAndDivide(List<string> list)
         {
-            int index = 0;
-            while (index != -1)
+            int i = 0;
+            while (i != -1)
             {
-                index = list.IndexOf("*");
-                if (index != -1)
+                i = list.IndexOf("*");
+                if (i != -1)
                 {
-                    list[index] = (Convert.ToDouble(list[index - 1]) * Convert.ToDouble(list[index + 1])).ToString();
-                    list.RemoveAt(index + 1);
-                    list.RemoveAt(index - 1);
+                    list[i] = (Convert.ToDouble(list[i - 1]) * Convert.ToDouble(list[i + 1])).ToString();
+                    list.RemoveAt(i + 1);
+                    list.RemoveAt(i - 1);
                 }
             }
-            index = 0;
-            while (index != -1)
+            i = 0;
+            while (i != -1)
             {
-                index = list.IndexOf("/");
-                if (index != -1)
+                i = list.IndexOf("/");
+                if (i != -1)
                 {
-                    list[index] = (Convert.ToDouble(list[index - 1]) / Convert.ToDouble(list[index + 1])).ToString();
-                    list.RemoveAt(index + 1);
-                    list.RemoveAt(index - 1);
+                    list[i] = (Convert.ToDouble(list[i - 1]) / Convert.ToDouble(list[i + 1])).ToString();
+                    list.RemoveAt(i + 1);
+                    list.RemoveAt(i - 1);
                 }
             }
         }
         private static void AddAndDeduct(List<string> list)
         {
-            int index = 0;
-            while (index != -1)
+            int i = 0;
+            while (i != -1)
             {
-                index = list.IndexOf("+");
-                if (index != -1)
+                i = list.IndexOf("+");
+                if (i != -1)
                 {
-                    list[index] = (Convert.ToDouble(list[index - 1]) + Convert.ToDouble(list[index + 1])).ToString();
-                    list.RemoveAt(index + 1);
-                    list.RemoveAt(index - 1);
+                    list[i] = (Convert.ToDouble(list[i - 1]) + Convert.ToDouble(list[i + 1])).ToString();
+                    list.RemoveAt(i + 1);
+                    list.RemoveAt(i - 1);
                 }
             }
-            index = 0;
-            while (index != -1)
+            i = 0;
+            while (i != -1)
             {
-                index = list.IndexOf("-");
-                if (index != -1)
+                i = list.IndexOf("-");
+                if (i != -1)
                 {
-                    list[index] = (Convert.ToDouble(list[index - 1]) - Convert.ToDouble(list[index + 1])).ToString();
-                    list.RemoveAt(index + 1);
-                    list.RemoveAt(index - 1);
+                    list[i] = (Convert.ToDouble(list[i - 1]) - Convert.ToDouble(list[i + 1])).ToString();
+                    list.RemoveAt(i + 1);
+                    list.RemoveAt(i - 1);
                 }
             }
         }

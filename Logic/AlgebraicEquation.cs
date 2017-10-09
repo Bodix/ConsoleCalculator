@@ -8,15 +8,32 @@ namespace ConsoleCalculator
 
         public static double SolveByBisection(double a, double b)
         {
-            while (Math.Abs(a - b) > eps)
+            if (Function.F(a) * Function.F(b) >= 0)
             {
-                double m = (a + b) / 2;
-                if (Function.F(a) * Function.F(m) > 0)
-                    a = m;
-                if (Function.F(b) * Function.F(m) > 0)
-                    b = m;
+                throw new Exception("Ошибка: F(a) и F(b) должны иметь разные знаки.");
             }
-            return (a + b) / 2;
+            double m = 0;
+            while (Math.Abs(b - a) > eps && Function.F(m) != 0)
+            {
+                m = (a + b) / 2;
+                if (Function.F(a) * Function.F(m) > 0) b = m;
+                if (Function.F(b) * Function.F(m) > 0) a = m;
+            }
+            return m;
+        }
+        public static double SolveByChords(double a, double b)
+        {
+            double m = 0;
+            double tmp;
+            do
+            {
+                tmp = m;
+                m = b - Function.F(b) * (a - b) / (Function.F(a) - Function.F(b));
+                a = b;
+                b = tmp;
+            }
+            while (Math.Abs(m - b) > eps);
+            return m;
         }
     }
 }

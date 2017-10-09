@@ -1,77 +1,86 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ConsoleCalculator
 {
     class View
     {
-        static string formatException = "Ошибка: Некорректное значение, попробуйте снова. Используйте /cancel для отмены";
+        static string cancelCommand = "/c";
+        static string formatException = "Ошибка: Некорректное значение, попробуйте снова. Используйте /c для отмены.";
 
-        public static void Command()
+        public static void GetCommand()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\nВведите команду:");
-            Console.Write("> ");
-            string command = GetInput().ToLower();
+            WriteLine("\nВведите команду:");
+            Write("> ");
+            string command = GetInput().Trim(' ').ToLower();
             if (command == "/calc")
             {
-                Console.WriteLine("Введите выражение: ");
                 try
                 {
-                    ShowNumber(Arithmetic.Solve(GetInput()));
+                    ShowNumber(Arithmetic.Solve(GetExpression()));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    ShowException("Ошибка: В выражении была допущена ошибка.");
-                    Command();
+                    ShowException(e.Message);
+                    GetCommand();
                 }
             }
             if (command == "/vec")
             {
-                Console.WriteLine(
+                WriteLine(
 @"Доступные действия:
 v+v - сложение векторов
 v-v - вычитание векторов
 v*n - умножение вектора на число
 v*v - скалярное произведение векторов
 len - длина вектора");
-                Console.Write("Действие: ");
+                Write("Действие: ");
                 int vectorSize;
                 double[] v1, v2;
-                switch (GetInput().ToLower())
+                try
                 {
-                    case "v+v":
-                        vectorSize = GetVectorSize();
-                        v1 = GetVector(vectorSize, 1);
-                        v2 = GetVector(vectorSize, 2);
-                        ShowVector(Vector.AddVectorToVector(v1, v2));
-                        break;
-                    case "v-v":
-                        vectorSize = GetVectorSize();
-                        v1 = GetVector(vectorSize, 1);
-                        v2 = GetVector(vectorSize, 2);
-                        ShowVector(Vector.DeductVectorFromVector(v1, v2));
-                        break;
-                    case "v*n":
-                        v1 = GetVector();
-                        double n = GetNumber();
-                        ShowVector(Vector.MultiplyVectorToNumber(v1, n));
-                        break;
-                    case "v*v":
-                        vectorSize = GetVectorSize();
-                        v1 = GetVector(vectorSize, 1);
-                        v2 = GetVector(vectorSize, 2);
-                        ShowNumber(Vector.MultiplyScalar(v1, v2));
-                        break;
-                    case "len":
-                        v1 = GetVector();
-                        ShowNumber(Vector.GetVectorLength(v1));
-                        break;
+                    switch (GetInput().Trim(' ').ToLower())
+                    {
+                        case "v+v":
+                            vectorSize = GetVectorSize();
+                            v1 = GetVector(vectorSize, 1);
+                            v2 = GetVector(vectorSize, 2);
+                            ShowVector(Vector.AddVectorToVector(v1, v2));
+                            break;
+                        case "v-v":
+                            vectorSize = GetVectorSize();
+                            v1 = GetVector(vectorSize, 1);
+                            v2 = GetVector(vectorSize, 2);
+                            ShowVector(Vector.DeductVectorFromVector(v1, v2));
+                            break;
+                        case "v*n":
+                            v1 = GetVector();
+                            double n = GetNumber();
+                            ShowVector(Vector.MultiplyVectorToNumber(v1, n));
+                            break;
+                        case "v*v":
+                            vectorSize = GetVectorSize();
+                            v1 = GetVector(vectorSize, 1);
+                            v2 = GetVector(vectorSize, 2);
+                            ShowNumber(Vector.MultiplyScalar(v1, v2));
+                            break;
+                        case "len":
+                            v1 = GetVector();
+                            ShowNumber(Vector.GetVectorLength(v1));
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    ShowException(e.Message);
+                    GetCommand();
                 }
             }
             if (command == "/mat")
             {
-                Console.WriteLine(
+                WriteLine(
 @"Доступные действия:
 m+m - сложение матриц
 m-m - вычитание матриц
@@ -81,11 +90,11 @@ m*m - умножение матрицы на матрицу
 trans - транспонирование матрицы
 det - определитель матрицы
 inv - обратная матрица");
-                Console.Write("Действие: ");
+                Write("Действие: ");
                 double[,] m1, m2;
                 try
                 {
-                    switch (GetInput().ToLower())
+                    switch (GetInput().Trim(' ').ToLower())
                     {
                         case "m+m":
                             m1 = GetMatrix(1);
@@ -129,21 +138,22 @@ inv - обратная матрица");
                 catch (Exception e)
                 {
                     ShowException(e.Message);
-                    Command();
+                    GetCommand();
                 }
             }
             if (command == "/lin")
             {
-                Console.WriteLine(
+                WriteLine(
 @"Доступные действия:
 inv - решить СЛАУ методом обратной матрицы
-iter - решить СЛАУ методом простых итераций");
-                Console.Write("Действие: ");
+iter - решить СЛАУ методом простых итераций
+gauss - решить СЛАУ методом Гаусса");
+                Write("Действие: ");
                 double[,] a;
                 double[] b;
                 try
                 {
-                    switch (GetInput().ToLower())
+                    switch (GetInput().Trim(' ').ToLower())
                     {
                         case "inv":
                             a = GetMatrix();
@@ -153,74 +163,128 @@ iter - решить СЛАУ методом простых итераций");
                         case "iter":
                             a = GetMatrix();
                             b = GetVector();
-                            ShowVector(LinearSystem.SolveLSBySimpleIterations(a, b));
+                            ShowVector(LinearSystem.SolveLSByIteration(LinearSystem.ConvertToExtendedMatrix(a, b)));
+                            break;
+                        case "gauss":
+                            a = GetMatrix();
+                            b = GetVector();
+                            ShowVector(LinearSystem.SolveLSByGauss(LinearSystem.ConvertToExtendedMatrix(a, b)));
                             break;
                     }
                 }
                 catch (Exception e)
                 {
                     ShowException(e.Message);
-                    Command();
+                    GetCommand();
                 }
             }
             if (command == "/nlin")
             {
-                Console.WriteLine(
+                WriteLine(
 @"Доступные действия:
-bis - решить уравнение методом половинного деления (бисекции)");
-                Console.Write("Действие: ");
+bis - решить нелинейное уравнение методом половинного деления (бисекции)
+ch - решить нелинейное уравнение методом хорд");
+                Write("Действие: ");
                 double a;
                 double b;
                 try
                 {
-                    switch (GetInput().ToLower())
+                    switch (GetInput().Trim(' ').ToLower())
                     {
                         case "bis":
                             a = GetNumber();
                             b = GetNumber();
                             ShowNumber(AlgebraicEquations.SolveByBisection(a, b));
                             break;
+                        case "ch":
+                            a = GetNumber();
+                            b = GetNumber();
+                            ShowNumber(AlgebraicEquations.SolveByChords(a, b));
+                            break;
                     }
                 }
                 catch (Exception e)
                 {
                     ShowException(e.Message);
-                    Command();
+                    GetCommand();
                 }
             }
             if (command == "/help")
             {
-                Console.WriteLine("Список команд:\n/calc - простые операции\n/vec - операции с векторами\n/mat - операции с матрицами\n/lin - операции с системами линейных алгебраических уравнений (СЛАУ)\n/nlin - операции с нелинейными уравнений\n/clear - очистить консоль\n/exit - выход");
-                Command();
+                WriteLine("Список команд:\n/calc - арифметические операции\n/vec - операции с векторами\n/mat - операции с матрицами\n/lin - операции с системами линейных алгебраических уравнений (СЛАУ)\n/nlin - операции с нелинейными уравнений\n/clr - очистить консоль\n/q - выход");
+                GetCommand();
             }
-            if (command == "/clear")
+            if (command == "/clr")
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("\"Console Calculator\" by Bogdan Nikolaev (IT-36a, NTU \"KhPI\")");
-                Command();
+                WriteLine("\"Console Calculator\" by Bogdan Nikolaev (IT-36a, NTU \"KhPI\")");
+                GetCommand();
             }
-            if (command == "/exit")
+            if (command == "/q")
             {
                 Environment.Exit(0);
             }
             else
             {
-                Console.WriteLine("Команда не найдена (/help).");
-                Command();
+                WriteLine("Команда не найдена (/help).");
+                GetCommand();
             }
         }
         private static string GetInput()
         {
             Console.ForegroundColor = ConsoleColor.Green;
             string input = Console.ReadLine();
+            Log.WriteLine(input);
             Console.ForegroundColor = ConsoleColor.Yellow;
             return input;
+        }
+        private static string GetExpression()
+        {
+            Write("Введите выражение: ");
+            string expression = GetInput();
+            if (Regex.IsMatch(expression, @"[^0-9 \+\-\*\^/\(\)pePE]")) throw new Exception("Ошибка: Выражение содержит недопустимый символ.");
+            if (expression.Contains('(') | expression.Contains(')'))
+            {
+                int i = 0;
+                int balance = 0;
+                while (i < expression.Length)
+                {
+                    if (expression[i] == '(') balance++;
+                    if (expression[i] == ')') balance--; if (balance < 0) break;
+                    i++;
+                }
+                if (balance != 0)
+                    throw new Exception("Ошибка: В выражении не закрыты скобки.");
+            }
+            expression = Regex.Replace(expression, @"p", Math.PI.ToString());
+            expression = Regex.Replace(expression, @"e", Math.E.ToString());
+            return expression;
+        }
+        private static void Write(string text)
+        {
+            Console.Write(text);
+            Log.Write(text);
+        }
+        private static void Write(string format, params object[] arg)
+        {
+            Console.Write(format, arg);
+            Log.Write(format, arg);
+        }
+        private static void WriteLine(string text)
+        {
+            Console.WriteLine(text);
+            Log.WriteLine(text);
+        }
+        private static void WriteLine()
+        {
+            Console.WriteLine();
+            Log.WriteLine();
         }
         private static void ShowException(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
+            WriteLine(message);
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
 
@@ -233,8 +297,13 @@ bis - решить уравнение методом половинного де
             {
                 try
                 {
-                    Console.Write("Число: ");
-                    number = Convert.ToDouble(GetInput());
+                    Write("Число: ");
+                    string input = GetInput();
+                    if (input == cancelCommand)
+                    {
+                        GetCommand();
+                    }
+                    number = Convert.ToDouble(input);
                     flag = false;
                 }
                 catch (FormatException)
@@ -246,8 +315,8 @@ bis - решить уравнение методом половинного де
         }
         private static void ShowNumber(double number)
         {
-            Console.WriteLine("Результат: " + number);
-            Command();
+            WriteLine("Результат: " + number);
+            GetCommand();
         }
         #endregion
 
@@ -260,11 +329,11 @@ bis - решить уравнение методом половинного де
             {
                 try
                 {
-                    Console.Write("Размер: ");
+                    Write("Размер: ");
                     string input = GetInput();
-                    if (input == "/cancel")
+                    if (input == cancelCommand)
                     {
-                        Command();
+                        GetCommand();
                     }
                     size = Int16.Parse(input);
                     flag = false;
@@ -278,7 +347,7 @@ bis - решить уравнение методом половинного де
         }
         private static double[] GetVector()
         {
-            Console.WriteLine("Вектор:");
+            WriteLine("Вектор:");
             double[] vector = new double[GetVectorSize()];
             for (int i = 0; i < vector.Length; i++)
             {
@@ -287,11 +356,11 @@ bis - решить уравнение методом половинного де
                 {
                     try
                     {
-                        Console.Write((i + 1) + ": ");
+                        Write((i + 1) + ": ");
                         string input = GetInput();
-                        if (input == "/cancel")
+                        if (input == cancelCommand)
                         {
-                            Command();
+                            GetCommand();
                         }
                         vector[i] = Convert.ToDouble(input);
                         flag = false;
@@ -307,7 +376,7 @@ bis - решить уравнение методом половинного де
         private static double[] GetVector(int size, int index)
         {
             double[] vector = new double[size];
-            Console.WriteLine("Вектор " + index + ":");
+            WriteLine("Вектор " + index + ":");
             for (int i = 0; i < vector.Length; i++)
             {
                 bool flag = true;
@@ -315,11 +384,11 @@ bis - решить уравнение методом половинного де
                 {
                     try
                     {
-                        Console.Write((i + 1) + ": ");
+                        Write((i + 1) + ": ");
                         string input = GetInput();
-                        if (input == "/cancel")
+                        if (input == cancelCommand)
                         {
-                            Command();
+                            GetCommand();
                         }
                         vector[i] = Convert.ToDouble(input);
                         flag = false;
@@ -334,11 +403,11 @@ bis - решить уравнение методом половинного де
         }
         private static void ShowVector(double[] vector)
         {
-            Console.WriteLine("Результат: ");
+            WriteLine("Результат: ");
             for (int i = 0; i < vector.Length; i++)
-                Console.Write("{0:0.###}\t", vector[i]);
-            Console.WriteLine();
-            Command();
+                Write("{0:0.###}\t", vector[i]);
+            WriteLine();
+            GetCommand();
         }
         #endregion
 
@@ -351,11 +420,11 @@ bis - решить уравнение методом половинного де
             {
                 try
                 {
-                    Console.Write("Кол-во строк: ");
+                    Write("Кол-во строк: ");
                     string input = GetInput();
-                    if (input == "/cancel")
+                    if (input == cancelCommand)
                     {
-                        Command();
+                        GetCommand();
                     }
                     rows = Int16.Parse(input);
                     flag = false;
@@ -375,11 +444,11 @@ bis - решить уравнение методом половинного де
             {
                 try
                 {
-                    Console.Write("Кол-во столбцов: ");
+                    Write("Кол-во столбцов: ");
                     string input = GetInput();
-                    if (input == "/cancel")
+                    if (input == cancelCommand)
                     {
-                        Command();
+                        GetCommand();
                     }
                     cols = Int16.Parse(input);
                     flag = false;
@@ -393,7 +462,7 @@ bis - решить уравнение методом половинного де
         }
         private static double[,] GetMatrix()
         {
-            Console.WriteLine("Матрица:");
+            WriteLine("Матрица:");
             double[,] matrix = new double[GetNumberOfRows(), GetNumberOfCols()];
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
@@ -402,11 +471,11 @@ bis - решить уравнение методом половинного де
                 {
                     try
                     {
-                        Console.Write((i + 1) + ": ");
+                        Write((i + 1) + ": ");
                         string input = GetInput();
-                        if (input == "/cancel")
+                        if (input == cancelCommand)
                         {
-                            Command();
+                            GetCommand();
                         }
                         int j = 0;
                         foreach (int v in input.Split(' ').Select(v => Convert.ToDouble(v)))
@@ -426,7 +495,7 @@ bis - решить уравнение методом половинного де
         }
         private static double[,] GetMatrix(int index)
         {
-            Console.WriteLine("Матрица " + index + ":");
+            WriteLine("Матрица " + index + ":");
             double[,] matrix = new double[GetNumberOfRows(), GetNumberOfCols()];
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
@@ -435,11 +504,11 @@ bis - решить уравнение методом половинного де
                 {
                     try
                     {
-                        Console.Write((i + 1) + ": ");
+                        Write((i + 1) + ": ");
                         string input = GetInput();
-                        if (input == "/cancel")
+                        if (input == cancelCommand)
                         {
-                            Command();
+                            GetCommand();
                         }
                         int j = 0;
                         foreach (int v in input.Split(' ').Select(v => Convert.ToDouble(v)))
@@ -459,16 +528,16 @@ bis - решить уравнение методом половинного де
         }
         private static void ShowMatrix(double[,] matrix)
         {
-            Console.WriteLine("Результат: ");
+            WriteLine("Результат: ");
             for (int i = 0; i < matrix.GetLength(0); ++i)
             {
                 for (int j = 0; j < matrix.GetLength(1); ++j)
                 {
-                    Console.Write("{0:0.###}\t", matrix[i, j]);
+                    Write("{0:0.###}\t", matrix[i, j]);
                 }
-                Console.WriteLine();
+                WriteLine();
             }
-            Command();
+            GetCommand();
         }
         #endregion
     }

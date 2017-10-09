@@ -6,7 +6,7 @@ namespace ConsoleCalculator
     {
         public static double F(double x)
         {
-            return (5 * Math.Pow(x, 2)) - (4 * x) + 1;
+            return Math.Pow(x, 3) - 18 * x - 83;
         }
     }
 }
