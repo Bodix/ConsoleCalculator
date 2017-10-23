@@ -17,6 +17,13 @@ namespace ConsoleCalculator
             string command = GetInput().Trim(' ').ToLower();
             if (command == "/calc")
             {
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===Арифметический калькулятор===---",
+                    "Доступные операции: + - * / ^",
+                    "Доступно использование круглых скобок и констант:",
+                    "p = 3,141 (число Пи)",
+                    "e = 2,718 (число Эйлера)"
+                    ));
                 try
                 {
                     ShowNumber(Arithmetic.Solve(GetExpression()));
@@ -29,13 +36,14 @@ namespace ConsoleCalculator
             }
             if (command == "/vec")
             {
-                WriteLine(
-@"Доступные действия:
-v+v - сложение векторов
-v-v - вычитание векторов
-v*n - умножение вектора на число
-v*v - скалярное произведение векторов
-len - длина вектора");
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===Векторы===---",
+                    "Доступные действия:",
+                    "v+v - сложение векторов",
+                    "v-v - вычитание векторов",
+                    "v*n - умножение вектора на число",
+                    "v*v - скалярное произведение векторов",
+                    "len - длина вектора"));
                 Write("Действие: ");
                 int vectorSize;
                 double[] v1, v2;
@@ -45,14 +53,14 @@ len - длина вектора");
                     {
                         case "v+v":
                             vectorSize = GetVectorSize();
-                            v1 = GetVector(vectorSize, 1);
-                            v2 = GetVector(vectorSize, 2);
+                            v1 = GetVector("1", vectorSize);
+                            v2 = GetVector("2", vectorSize);
                             ShowVector(Vector.AddVectorToVector(v1, v2));
                             break;
                         case "v-v":
                             vectorSize = GetVectorSize();
-                            v1 = GetVector(vectorSize, 1);
-                            v2 = GetVector(vectorSize, 2);
+                            v1 = GetVector("1", vectorSize);
+                            v2 = GetVector("2", vectorSize);
                             ShowVector(Vector.DeductVectorFromVector(v1, v2));
                             break;
                         case "v*n":
@@ -62,8 +70,8 @@ len - длина вектора");
                             break;
                         case "v*v":
                             vectorSize = GetVectorSize();
-                            v1 = GetVector(vectorSize, 1);
-                            v2 = GetVector(vectorSize, 2);
+                            v1 = GetVector("1", vectorSize);
+                            v2 = GetVector("2", vectorSize);
                             ShowNumber(Vector.MultiplyScalar(v1, v2));
                             break;
                         case "len":
@@ -80,16 +88,17 @@ len - длина вектора");
             }
             if (command == "/mat")
             {
-                WriteLine(
-@"Доступные действия:
-m+m - сложение матриц
-m-m - вычитание матриц
-m*n - умножение матрицы на число
-m*v - умножение матрицы на вектор
-m*m - умножение матрицы на матрицу
-trans - транспонирование матрицы
-det - определитель матрицы
-inv - обратная матрица");
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===Матрицы===---",
+                    "Доступные действия:",
+                    "m+m - сложение матриц",
+                    "m-m - вычитание матриц",
+                    "m*n - умножение матрицы на число",
+                    "m*v - умножение матрицы на вектор",
+                    "m*m - умножение матрицы на матрицу",
+                    "trans - транспонирование матрицы",
+                    "det - определитель матрицы",
+                    "inv - обратная матрица"));
                 Write("Действие: ");
                 double[,] m1, m2;
                 try
@@ -97,13 +106,13 @@ inv - обратная матрица");
                     switch (GetInput().Trim(' ').ToLower())
                     {
                         case "m+m":
-                            m1 = GetMatrix(1);
-                            m2 = GetMatrix(2);
+                            m1 = GetMatrix("1");
+                            m2 = GetMatrix("2");
                             ShowMatrix(Matrix.AddMatrixToMatrix(m1, m2));
                             break;
                         case "m-m":
-                            m1 = GetMatrix(1);
-                            m2 = GetMatrix(2);
+                            m1 = GetMatrix("1");
+                            m2 = GetMatrix("2");
                             ShowMatrix(Matrix.DeductMatrixFromMatrix(m1, m2));
                             break;
                         case "m*n":
@@ -117,8 +126,8 @@ inv - обратная матрица");
                             ShowVector(Matrix.MultiplyMatrixToVector(m1, v));
                             break;
                         case "m*m":
-                            m1 = GetMatrix(1);
-                            m2 = GetMatrix(2);
+                            m1 = GetMatrix("1");
+                            m2 = GetMatrix("2");
                             ShowMatrix(Matrix.MultiplyMatrixToMatrix(m1, m2));
                             break;
                         case "trans":
@@ -143,11 +152,12 @@ inv - обратная матрица");
             }
             if (command == "/lin")
             {
-                WriteLine(
-@"Доступные действия:
-inv - решить СЛАУ методом обратной матрицы
-iter - решить СЛАУ методом простых итераций
-gauss - решить СЛАУ методом Гаусса");
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===СЛАУ===---",
+                    "Доступные действия:",
+                    "inv - решить СЛАУ методом обратной матрицы",
+                    "iter - решить СЛАУ методом простой итерации",
+                    "gauss - решить СЛАУ методом Гаусса"));
                 Write("Действие: ");
                 double[,] a;
                 double[] b;
@@ -156,18 +166,18 @@ gauss - решить СЛАУ методом Гаусса");
                     switch (GetInput().Trim(' ').ToLower())
                     {
                         case "inv":
-                            a = GetMatrix();
-                            b = GetVector();
+                            a = GetMatrix("коэффициентов");
+                            b = GetVector("свободных членов", a.GetLength(0));
                             ShowVector(LinearSystem.SolveLSByInvertMatrix(a, b));
                             break;
                         case "iter":
-                            a = GetMatrix();
-                            b = GetVector();
+                            a = GetMatrix("коэффициентов");
+                            b = GetVector("свободных членов", a.GetLength(0));
                             ShowVector(LinearSystem.SolveLSByIteration(LinearSystem.ConvertToExtendedMatrix(a, b)));
                             break;
                         case "gauss":
-                            a = GetMatrix();
-                            b = GetVector();
+                            a = GetMatrix("коэффициентов");
+                            b = GetVector("свободных членов", a.GetLength(0));
                             ShowVector(LinearSystem.SolveLSByGauss(LinearSystem.ConvertToExtendedMatrix(a, b)));
                             break;
                     }
@@ -180,10 +190,11 @@ gauss - решить СЛАУ методом Гаусса");
             }
             if (command == "/nlin")
             {
-                WriteLine(
-@"Доступные действия:
-bis - решить нелинейное уравнение методом половинного деления (бисекции)
-ch - решить нелинейное уравнение методом хорд");
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===Нелинейные уравнения===---",
+                    "Доступные действия:",
+                    "bis - решить нелинейное уравнение методом бисекции",
+                    "ch - решить нелинейное уравнение методом хорд"));
                 Write("Действие: ");
                 double a;
                 double b;
@@ -192,13 +203,15 @@ ch - решить нелинейное уравнение методом хор�
                     switch (GetInput().Trim(' ').ToLower())
                     {
                         case "bis":
-                            a = GetNumber();
-                            b = GetNumber();
+                            WriteLine("Введите интервал [a, b]");
+                            a = GetNumber("a");
+                            b = GetNumber("b");
                             ShowNumber(AlgebraicEquations.SolveByBisection(a, b));
                             break;
                         case "ch":
-                            a = GetNumber();
-                            b = GetNumber();
+                            WriteLine("Введите интервал [a, b]");
+                            a = GetNumber("a");
+                            b = GetNumber("b");
                             ShowNumber(AlgebraicEquations.SolveByChords(a, b));
                             break;
                     }
@@ -209,9 +222,85 @@ ch - решить нелинейное уравнение методом хор�
                     GetCommand();
                 }
             }
+            if (command == "/int")
+            {
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===Интерполяция===---",
+                    "Доступные действия:",
+                    "near - интерполяция методом ближайшего соседа",
+                    "lin - линейная интерполяция",
+                    "poly - полиномиальная интерполяция"));
+                Write("Действие: ");
+                Function.Point[] p;
+                double x;
+                try
+                {
+                    switch (GetInput().Trim(' ').ToLower())
+                    {
+                        case "near":
+                            p = GetPoints();
+                            x = GetNumber("X");
+                            ShowNumber(Interpolation.NearestNeighbor(p, x));
+                            break;
+                        case "lin":
+                            p = GetPoints();
+                            x = GetNumber("X");
+                            ShowNumber(Interpolation.Linear(p, x));
+                            break;
+                        case "poly":
+                            p = GetPoints();
+                            x = GetNumber("X");
+                            ShowNumber(Interpolation.Polynomial(p, x));
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    ShowException(e.Message);
+                    GetCommand();
+                }
+            }
+            if (command == "/ex")
+            {
+                WriteLine(String.Join(Environment.NewLine,
+                    "---===Примеры ввода===---",
+                    "Задача:",
+                    "Найти корень из 2+3*2 с помощью арифметического калькулятора",
+                    "Ввод: (2+3*2)^(1/2)",
+                    "",
+                    "Задача:",
+                    "Возвести экспоненту (число Эйлера) во вторую степень",
+                    "с помощью арифметического калькулятора",
+                    "Ввод: e^2",
+                    "",
+                    "Задача:",
+                    "Ввести матрицу 2х3",
+                    "Ввод:",
+                    "1: -23,2 -31 351",
+                    "2: 244,04 0,2 -1,5",
+                    "",
+                    "Задача:",
+                    "Ввести точки с координатами (4; -1,5) (2; 5) (0,7; -3)",
+                    "Ввод:",
+                    "1: 4 -1,5",
+                    "2: 2 5",
+                    "3: 0,7 -3"));
+                GetCommand();
+            }
             if (command == "/help")
             {
-                WriteLine("Список команд:\n/calc - арифметические операции\n/vec - операции с векторами\n/mat - операции с матрицами\n/lin - операции с системами линейных алгебраических уравнений (СЛАУ)\n/nlin - операции с нелинейными уравнений\n/clr - очистить консоль\n/q - выход");
+                WriteLine(String.Join(Environment.NewLine,
+                    "Список команд:",
+                    "/calc - арифметические операции",
+                    "/vec - операции с векторами",
+                    "/mat - операции с матрицами",
+                    "/lin - операции с системами линейных алгебраических уравнений",
+                    "/nlin - операции с нелинейными уравнениями",
+                    "/int - интерполяция",
+                    "/ex - примеры ввода",
+                    "/clr - очистить консоль",
+                    "/q - выход"
+                    ));
                 GetCommand();
             }
             if (command == "/clr")
@@ -225,11 +314,8 @@ ch - решить нелинейное уравнение методом хор�
             {
                 Environment.Exit(0);
             }
-            else
-            {
-                WriteLine("Команда не найдена (/help).");
-                GetCommand();
-            }
+            WriteLine("Команда не найдена (/help)");
+            GetCommand();
         }
         private static string GetInput()
         {
@@ -242,17 +328,17 @@ ch - решить нелинейное уравнение методом хор�
         private static string GetExpression()
         {
             Write("Введите выражение: ");
-            string expression = GetInput();
-            if (Regex.IsMatch(expression, @"[^0-9 \+\-\*\^/\(\)pePE]")) throw new Exception("Ошибка: Выражение содержит недопустимый символ.");
+            string expression = GetInput().ToLower();
+            if (Regex.IsMatch(expression, @"[^0-9 \+\-\*\^/\(\)pe]"))
+                throw new Exception("Ошибка: Выражение содержит недопустимый символ.");
             if (expression.Contains('(') | expression.Contains(')'))
             {
-                int i = 0;
                 int balance = 0;
-                while (i < expression.Length)
+                for (int i = 0; i < expression.Length; i++)
                 {
                     if (expression[i] == '(') balance++;
-                    if (expression[i] == ')') balance--; if (balance < 0) break;
-                    i++;
+                    if (expression[i] == ')') balance--;
+                    if (balance < 0) break;
                 }
                 if (balance != 0)
                     throw new Exception("Ошибка: В выражении не закрыты скобки.");
@@ -288,7 +374,6 @@ ch - решить нелинейное уравнение методом хор�
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
 
-        #region Number input/output.
         private static double GetNumber()
         {
             double number = 0;
@@ -313,14 +398,36 @@ ch - решить нелинейное уравнение методом хор�
             }
             return number;
         }
+        private static double GetNumber(string description)
+        {
+            double number = 0;
+            bool flag = true;
+            while (flag)
+            {
+                try
+                {
+                    Write(description + ": ");
+                    string input = GetInput();
+                    if (input == cancelCommand)
+                    {
+                        GetCommand();
+                    }
+                    number = Convert.ToDouble(input);
+                    flag = false;
+                }
+                catch (FormatException)
+                {
+                    ShowException(formatException);
+                }
+            }
+            return number;
+        }
         private static void ShowNumber(double number)
         {
             WriteLine("Результат: " + number);
             GetCommand();
         }
-        #endregion
 
-        #region Vector input/output.
         private static int GetVectorSize()
         {
             int size = 0;
@@ -336,6 +443,8 @@ ch - решить нелинейное уравнение методом хор�
                         GetCommand();
                     }
                     size = Int16.Parse(input);
+                    if (size <= 0)
+                        throw new FormatException("Ошибка: Размер вектора должен быть положительным.");
                     flag = false;
                 }
                 catch (FormatException)
@@ -365,7 +474,7 @@ ch - решить нелинейное уравнение методом хор�
                         vector[i] = Convert.ToDouble(input);
                         flag = false;
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         ShowException(formatException);
                     }
@@ -373,10 +482,10 @@ ch - решить нелинейное уравнение методом хор�
             }
             return vector;
         }
-        private static double[] GetVector(int size, int index)
+        private static double[] GetVector(string description, int size)
         {
             double[] vector = new double[size];
-            WriteLine("Вектор " + index + ":");
+            WriteLine("Вектор " + description + ":");
             for (int i = 0; i < vector.Length; i++)
             {
                 bool flag = true;
@@ -393,7 +502,7 @@ ch - решить нелинейное уравнение методом хор�
                         vector[i] = Convert.ToDouble(input);
                         flag = false;
                     }
-                    catch (FormatException)
+                    catch (Exception)
                     {
                         ShowException(formatException);
                     }
@@ -409,9 +518,7 @@ ch - решить нелинейное уравнение методом хор�
             WriteLine();
             GetCommand();
         }
-        #endregion
 
-        #region Matrix input/output.
         private static int GetNumberOfRows()
         {
             int rows = 0;
@@ -427,6 +534,8 @@ ch - решить нелинейное уравнение методом хор�
                         GetCommand();
                     }
                     rows = Int16.Parse(input);
+                    if (rows <= 0)
+                        throw new FormatException("Ошибка: Количество строк должно быть положительным.");
                     flag = false;
                 }
                 catch (FormatException)
@@ -451,6 +560,8 @@ ch - решить нелинейное уравнение методом хор�
                         GetCommand();
                     }
                     cols = Int16.Parse(input);
+                    if (cols <= 0)
+                        throw new FormatException("Ошибка: Количество столбцов должно быть положительным.");
                     flag = false;
                 }
                 catch (FormatException)
@@ -489,13 +600,12 @@ ch - решить нелинейное уравнение методом хор�
                         ShowException(formatException);
                     }
                 }
-
             }
             return matrix;
         }
-        private static double[,] GetMatrix(int index)
+        private static double[,] GetMatrix(string description)
         {
-            WriteLine("Матрица " + index + ":");
+            WriteLine("Матрица " + description + ":");
             double[,] matrix = new double[GetNumberOfRows(), GetNumberOfCols()];
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
@@ -539,6 +649,63 @@ ch - решить нелинейное уравнение методом хор�
             }
             GetCommand();
         }
-        #endregion
+
+        private static int GetNumberOfPoints()
+        {
+            int number = 0;
+            bool flag = true;
+            while (flag)
+            {
+                try
+                {
+                    Write("Кол-во точек: ");
+                    string input = GetInput();
+                    if (input == cancelCommand)
+                    {
+                        GetCommand();
+                    }
+                    number = Int16.Parse(input);
+                    if (number <= 0)
+                        throw new FormatException("Ошибка: Количество точек должно быть положительное.");
+                    flag = false;
+                }
+                catch (FormatException)
+                {
+                    ShowException(formatException);
+                }
+            }
+            return number;
+        }
+        private static Function.Point[] GetPoints()
+        {
+            WriteLine("Точки:");
+            Function.Point[] points = new Function.Point[GetNumberOfPoints()];
+            for (int i = 0; i < points.Length; i++)
+            {
+                bool flag = true;
+                while (flag)
+                {
+                    try
+                    {
+                        Write((i + 1) + ": ");
+                        string input = GetInput();
+                        if (input == cancelCommand)
+                        {
+                            GetCommand();
+                        }
+                        if (input.Split(' ').Length > 2) throw new FormatException();
+                        points[i] = new Function.Point(Convert.ToDouble(input.Split(' ')[0]),
+                            Convert.ToDouble(input.Split(' ')[1]));
+                        flag = false;
+                    }
+                    catch (Exception)
+                    {
+                        ShowException(formatException);
+                    }
+                }
+            }
+            points = points.OrderBy(X => X.X).ToArray();
+            return points;
+        }
     }
 }

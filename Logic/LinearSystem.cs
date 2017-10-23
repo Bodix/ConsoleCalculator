@@ -15,14 +15,14 @@ namespace ConsoleCalculator
             matrix = ConvertToIterationForm(matrix);
             double[,] a = new double[matrix.GetLength(0), matrix.GetLength(1) - 1];
             double[] b = new double[matrix.GetLength(0)];
-            for (int row = 0; row < matrix.GetLength(0); row++)
-                for (int col = 0; col < matrix.GetLength(1) - 1; col++)
+            for (int row = 0; row < a.GetLength(0); row++)
+                for (int col = 0; col < a.GetLength(1) - 1; col++)
                 {
                     a[row, col] = matrix[row, col];
                 }
             if (!IsMatrixConvergense(a))
                 throw new Exception("Ошибка: Матрица не сходится.");
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < b.Length; i++)
             {
                 b[i] = matrix[i, matrix.GetLength(1) - 1];
             }
@@ -69,7 +69,7 @@ namespace ConsoleCalculator
                 {
                     result[row, col] = a[row, col];
                 }
-            for (int i = 0; i < b.GetLength(0); i++)
+            for (int i = 0; i < b.Length; i++)
             {
                 result[i, a.GetLength(1)] = b[i];
             }
@@ -103,8 +103,8 @@ namespace ConsoleCalculator
         }
         private static bool IsIterationsFinished(double[] previous, double[] next)
         {
-            double[] difference = new double[previous.GetLength(0)];
-            for (int i = 0; i < difference.GetLength(0); i++)
+            double[] difference = new double[previous.Length];
+            for (int i = 0; i < difference.Length; i++)
             {
                 difference[i] = Math.Abs(previous[i] - next[i]);
                 if (difference[i] > eps) return false;

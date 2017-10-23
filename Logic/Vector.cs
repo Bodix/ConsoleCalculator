@@ -28,14 +28,14 @@ namespace ConsoleCalculator
         public static double MultiplyScalar(double[] vector1, double[] vector2)
         {
             double sum = 0;
-            for (int i = 0; i < vector1.GetLength(0); i++)
+            for (int i = 0; i < vector1.Length; i++)
                 sum += vector1[i] * vector2[i];
             return sum;
         }
         public static double GetVectorLength(double[] vector)
         {
             double sum = 0;
-            for (int i = 0; i < vector.GetLength(0); i++)
+            for (int i = 0; i < vector.Length; i++)
                 sum += vector[i] * vector[i];
             return Math.Sqrt(sum);
         }

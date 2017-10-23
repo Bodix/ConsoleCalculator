@@ -61,6 +61,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="Logic\Arithmetic.cs" />
     <Compile Include="Logic\Function.cs" />
+    <Compile Include="Logic\Interpolation.cs" />
     <Compile Include="Logic\LinearSystem.cs" />
     <Compile Include="Logic\AlgebraicEquation.cs" />
     <Compile Include="Program.cs" />

@@ -37,7 +37,7 @@ namespace ConsoleCalculator
             if (matrix.GetLength(1) != vector.GetLength(0))
                 throw new Exception("Ошибка: Количество столбцов матрицы не равно размеру вектора.");
             double[] result = new double[matrix.GetLength(0)];
-            for (int i = 0; i < result.GetLength(0); i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 result[i] = Vector.MultiplyScalar(GetRow(matrix, i), vector);
             }
@@ -56,7 +56,7 @@ namespace ConsoleCalculator
         private static double[] GetRow(double[,] matrix, int rowNumber)
         {
             double[] result = new double[matrix.GetLength(1)];
-            for (int i = 0; i < result.GetLength(0); i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 result[i] = matrix[rowNumber, i];
             }
@@ -65,7 +65,7 @@ namespace ConsoleCalculator
         private static double[] GetColumn(double[,] matrix, int columnNumber)
         {
             double[] result = new double[matrix.GetLength(0)];
-            for (int i = 0; i < result.GetLength(0); i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 result[i] = matrix[i, columnNumber];
             }
@@ -129,6 +129,7 @@ namespace ConsoleCalculator
         }
         public static double[,] GetInvertMatrix(double[,] matrix)
         {
+            if (GetDeterminant(matrix) == 0) throw new Exception("Ошибка: Обратная матрица не существует.");
             return MultiplyMatrixToNumber(GetTransposeMatrix(GetCofactorMatrix(GetMinorMatrix(matrix))),
                 1 / GetDeterminant(matrix));
         }
