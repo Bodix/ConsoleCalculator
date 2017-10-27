@@ -4,8 +4,12 @@ namespace ConsoleCalculator
 {
     class Vector
     {
+        private static string sizeException = "Ошибка. Размер векторов не совпадает.";
+
         public static double[] AddVectorToVector(double[] vector1, double[] vector2)
         {
+            if (vector1.Length != vector2.Length)
+                throw new Exception(sizeException);
             double[] result = new double[vector1.Length];
             for (int i = 0; i < result.Length; i++)
                 result[i] = vector1[i] + vector2[i];
@@ -13,6 +17,8 @@ namespace ConsoleCalculator
         }
         public static double[] DeductVectorFromVector(double[] vector1, double[] vector2)
         {
+            if (vector1.Length != vector2.Length)
+                throw new Exception(sizeException);
             double[] result = new double[vector1.Length];
             for (int i = 0; i < result.Length; i++)
                 result[i] = vector1[i] - vector2[i];
@@ -27,6 +33,8 @@ namespace ConsoleCalculator
         }
         public static double MultiplyScalar(double[] vector1, double[] vector2)
         {
+            if (vector1.Length != vector2.Length)
+                throw new Exception(sizeException);
             double sum = 0;
             for (int i = 0; i < vector1.Length; i++)
                 sum += vector1[i] * vector2[i];

@@ -6,11 +6,11 @@ namespace ConsoleCalculator
     {
         public static double eps = 1e-5;
         
-        public static double[] SolveLSByInvertMatrix(double[,] a, double[] b)
+        public static double[] SolveByInvertMatrix(double[,] a, double[] b)
         {
             return Matrix.MultiplyMatrixToVector(Matrix.GetInvertMatrix(a), b);
         }
-        public static double[] SolveLSByIteration(double[,] matrix)
+        public static double[] SolveByIteration(double[,] matrix)
         {
             matrix = ConvertToIterationForm(matrix);
             double[,] a = new double[matrix.GetLength(0), matrix.GetLength(1) - 1];
@@ -35,7 +35,7 @@ namespace ConsoleCalculator
             }
             return nextResult;
         }
-        public static double[] SolveLSByGauss(double[,] matrix)
+        public static double[] SolveByGauss(double[,] matrix)
         {
             if (matrix.GetLength(0) > matrix.GetLength(1) - 1)
                 throw new Exception("Ошибка. СЛАУ недоопределена.");

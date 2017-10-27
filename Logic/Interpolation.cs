@@ -70,7 +70,7 @@ namespace ConsoleCalculator
             double[] b = new double[p.Length];
             for (int i = 0; i < b.Length; i++)
                 b[i] = p[i].Y;
-            double[] c = LinearSystem.SolveLSByInvertMatrix(a, b);
+            double[] c = LinearSystem.SolveByInvertMatrix(a, b);
             for (int i = 0; i < c.Length; i++)
                 y += c[i] * Math.Pow(x, i);
             return y;
