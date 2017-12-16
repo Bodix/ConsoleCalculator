@@ -4,7 +4,7 @@ namespace ConsoleCalculator
 {
     class Vector
     {
-        private static string sizeException = "Ошибка. Размер векторов не совпадает.";
+        private static string sizeException = "Размер векторов не совпадает";
 
         public static double[] AddVectorToVector(double[] vector1, double[] vector2)
         {

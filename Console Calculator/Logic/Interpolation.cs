@@ -4,7 +4,7 @@ namespace ConsoleCalculator
 {
     class Interpolation
     {
-        public static double NearestNeighbor(Function.Point[] p, double x)
+        public static double NearestNeighbor(Point[] p, double x)
         {
             double y = 0;
             bool flag = false;
@@ -19,7 +19,7 @@ namespace ConsoleCalculator
                         flag = true;
                         break;
                     }
-                    if (x >= p[i].X + m)
+                    if (x > p[i].X + m)
                     {
                         y = p[i + 1].Y;
                         flag = true;
@@ -36,7 +36,7 @@ namespace ConsoleCalculator
             }
             return y;
         }
-        public static double Linear(Function.Point[] p, double x)
+        public static double Linear(Point[] p, double x)
         {
             double y = 0;
             bool flag = false;
@@ -52,10 +52,10 @@ namespace ConsoleCalculator
                 }
             }
             if (flag == false)
-                throw new Exception("Ошибка: Значение Х вне диапазона линейной интерполяции.");
+                throw new Exception("Значение Х вне диапазона линейной интерполяции");
             return y;
         }
-        public static double Polynomial(Function.Point[] p, double x)
+        public static double Polynomial(Point[] p, double x)
         {
             double y = 0;
             double[,] a = new double[p.Length, p.Length];

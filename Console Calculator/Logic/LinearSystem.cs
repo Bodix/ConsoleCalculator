@@ -21,7 +21,7 @@ namespace ConsoleCalculator
                     a[row, col] = matrix[row, col];
                 }
             if (!IsMatrixConvergense(a))
-                throw new Exception("Ошибка: Матрица не сходится.");
+                throw new Exception("Матрица не сходится");
             for (int i = 0; i < b.Length; i++)
             {
                 b[i] = matrix[i, matrix.GetLength(1) - 1];
@@ -38,7 +38,7 @@ namespace ConsoleCalculator
         public static double[] SolveByGauss(double[,] matrix)
         {
             if (matrix.GetLength(0) > matrix.GetLength(1) - 1)
-                throw new Exception("Ошибка. СЛАУ недоопределена.");
+                throw new Exception("СЛАУ недоопределена");
             double[] result = new double[matrix.GetLength(0)];
             double coeff;
             for (int k = 1; k < matrix.GetLength(0); k++)
@@ -62,7 +62,7 @@ namespace ConsoleCalculator
         public static double[,] ConvertToExtendedMatrix(double[,] a, double[] b)
         {
             if (a.GetLength(0) != b.GetLength(0))
-                throw new Exception("Ошибка. Невозможно привести матрицу и вектор к расширенной матрице.");
+                throw new Exception("Невозможно привести матрицу и вектор к расширенной матрице");
             double[,] result = new double[a.GetLength(0), a.GetLength(1) + 1];
             for (int row = 0; row < a.GetLength(0); row++)
                 for (int col = 0; col < a.GetLength(1); col++)
